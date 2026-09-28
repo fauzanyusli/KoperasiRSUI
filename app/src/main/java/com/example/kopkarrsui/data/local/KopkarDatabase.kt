@@ -22,6 +22,7 @@ import com.example.kopkarrsui.data.local.entity.PointLedger
 import com.example.kopkarrsui.data.local.entity.SHUAllocation
 import com.example.kopkarrsui.data.local.entity.SavingsAccount
 import com.example.kopkarrsui.data.local.entity.Transaction
+import com.example.kopkarrsui.util.PasswordUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,7 +97,7 @@ abstract class KopkarDatabase : RoomDatabase() {
                     alamat = "Jl. Sudirman No. 1, Jakarta",
                     tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000 * 3), // 3 tahun lalu
                     status = Member.MemberStatus.AKTIF,
-                    pinHash = "123456"
+                    pinHash = PasswordUtils.hashPin("123456")
                 ),
                 Member(
                     noAnggota = "KPR-002",
@@ -105,9 +106,9 @@ abstract class KopkarDatabase : RoomDatabase() {
                     noHp = "081234567891",
                     email = "siti@example.com",
                     alamat = "Jl. Gatot Subroto No. 5, Jakarta",
-                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000 * 2), // 2 tahun lalu
+                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000 * 2),
                     status = Member.MemberStatus.AKTIF,
-                    pinHash = "123456"
+                    pinHash = PasswordUtils.hashPin("123456")
                 ),
                 Member(
                     noAnggota = "KPR-003",
@@ -116,9 +117,9 @@ abstract class KopkarDatabase : RoomDatabase() {
                     noHp = "081234567892",
                     email = "ahmad@example.com",
                     alamat = "Jl. Thamrin No. 10, Jakarta",
-                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000), // 1 tahun lalu
+                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000),
                     status = Member.MemberStatus.AKTIF,
-                    pinHash = "123456"
+                    pinHash = PasswordUtils.hashPin("123456")
                 )
             )
 

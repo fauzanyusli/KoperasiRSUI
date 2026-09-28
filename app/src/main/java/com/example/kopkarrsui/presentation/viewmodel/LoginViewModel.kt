@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.domain.repository.MemberRepository
+import com.example.kopkarrsui.util.PasswordUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,8 +42,8 @@ class LoginViewModel @Inject constructor(
                     return@launch
                 }
 
-                // PIN validation — plain compare untuk dev, production pakai hash
-                if (member.pinHash != pin) {
+                // PIN validation — SHA-256 hash compare
+                if (!PasswordUtils.verifyPin(pin, member.pinHash.orEmpty())) {
                     _loginState.value = LoginState.Error("PIN salah")
                     return@launch
                 }
