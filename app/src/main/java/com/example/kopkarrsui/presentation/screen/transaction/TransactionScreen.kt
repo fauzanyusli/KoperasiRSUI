@@ -49,6 +49,11 @@ import com.example.kopkarrsui.presentation.component.EmptyState
 import com.example.kopkarrsui.presentation.component.ErrorState
 import com.example.kopkarrsui.presentation.component.LoadingOverlay
 import com.example.kopkarrsui.presentation.viewmodel.TransactionViewModel
+import com.example.kopkarrsui.util.ExportHelper
+import android.widget.Toast
+import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -60,6 +65,7 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
     val totalPoin by viewModel.totalPoin.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     var filterType by remember { mutableStateOf<Transaction.TransactionType?>(null) }
     var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
 
@@ -73,6 +79,21 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
                     Column {
                         Text("Transaksi & Poin", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFFE65100))
                         Text("Total Poin: ${viewModel.formatPoin(totalPoin)}", fontSize = 14.sp, color = Color(0xFFE65100).copy(alpha = 0.8f))
+                    }
+                    IconButton(onClick = {
+                        if (transactions.isEmpty()) {
+                            Toast.makeText(context, "Tidak ada data untuk diexport", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val uri = ExportHelper.exportTransactionsToCsv(context, transactions)
+                            if (uri != null) {
+                                ExportHelper.shareFile(context, uri)
+                                Toast.makeText(context, "File CSV siap dibagikan", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Gagal export data", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }) {
+                        Icon(Icons.Filled.FileDownload, contentDescription = "Export CSV", tint = Color(0xFFE65100))
                     }
                 }
             }
