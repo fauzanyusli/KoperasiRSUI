@@ -2,9 +2,11 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.entity.Member
 import com.example.kopkarrsui.domain.repository.MemberRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemberViewModel @Inject constructor(
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _member = MutableStateFlow<Member?>(null)
@@ -27,11 +30,12 @@ class MemberViewModel @Inject constructor(
     val error: StateFlow<String?> = _error.asStateFlow()
 
     init {
-        loadMember(1) // TODO: current member ID
+        val memberId = sessionManager.currentMemberId.takeIf { it > 0 } ?: 1L
+        loadMember(memberId)
     }
 
     fun loadMember(memberId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             _error.value = null
             try {

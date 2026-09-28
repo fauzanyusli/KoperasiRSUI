@@ -2,10 +2,12 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.entity.Transaction
 import com.example.kopkarrsui.domain.repository.PointRepository
 import com.example.kopkarrsui.domain.repository.TransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionViewModel @Inject constructor(
     private val transactionRepository: TransactionRepository,
-    private val pointRepository: PointRepository
+    private val pointRepository: PointRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
@@ -37,14 +40,15 @@ class TransactionViewModel @Inject constructor(
     private var hasMore = true
 
     init {
-        loadTransactions(1) // TODO: current member ID
+        val memberId = sessionManager.currentMemberId.takeIf { it > 0 } ?: 1L
+        loadTransactions(memberId)
     }
 
     fun loadTransactions(memberId: Long, refresh: Boolean = false) {
         if (refresh) { currentPage = 0; hasMore = true; _transactions.value = emptyList() }
         if (!hasMore && !refresh) return
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             _error.value = null
             try {

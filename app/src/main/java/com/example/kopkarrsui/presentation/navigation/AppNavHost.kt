@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.example.kopkarrsui.presentation.screen.auth.LoginScreen
 import com.example.kopkarrsui.presentation.screen.admin.AdminDashboardScreen
 import com.example.kopkarrsui.presentation.screen.admin.AuditLogScreen
+import com.example.kopkarrsui.presentation.screen.admin.BackupRestoreScreen
 import com.example.kopkarrsui.presentation.screen.rat.RATScreen
 import com.example.kopkarrsui.presentation.screen.dashboard.DashboardScreen
 import com.example.kopkarrsui.presentation.screen.dashboard.MemberManagementScreen
@@ -16,11 +17,6 @@ import com.example.kopkarrsui.presentation.screen.profile.ProfileScreen
 import com.example.kopkarrsui.presentation.screen.savings.SavingsScreen
 import com.example.kopkarrsui.presentation.screen.shu.SHUScreen
 import com.example.kopkarrsui.presentation.screen.transaction.TransactionScreen
-import com.example.kopkarrsui.presentation.viewmodel.DashboardViewModel
-import com.example.kopkarrsui.presentation.viewmodel.MemberViewModel
-import com.example.kopkarrsui.presentation.viewmodel.SavingsViewModel
-import com.example.kopkarrsui.presentation.viewmodel.SHUViewModel
-import com.example.kopkarrsui.presentation.viewmodel.TransactionViewModel
 
 @Composable
 fun AppNavHost(
@@ -55,12 +51,19 @@ fun AppNavHost(
             SHUScreen(hiltViewModel())
         }
         composable(AppDestination.Profile.route) {
-            ProfileScreen(hiltViewModel())
+            ProfileScreen(
+                viewModel = hiltViewModel(),
+                onLogout = {
+                    navController.navigate(AppDestination.AuthLogin.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(AppDestination.AdminDashboard.route) {
             AdminDashboardScreen(
                 onNavigateToAuditLog = { navController.navigate(AppDestination.AuditLog.route) },
-                onNavigateToBackup = { navController.navigate(AppDestination.AuditLog.route) }
+                onNavigateToBackup = { navController.navigate(AppDestination.BackupRestore.route) }
             )
         }
         composable(AppDestination.AuditLog.route) {
@@ -68,6 +71,9 @@ fun AppNavHost(
         }
         composable(AppDestination.RAT.route) {
             RATScreen()
+        }
+        composable(AppDestination.BackupRestore.route) {
+            BackupRestoreScreen(onBack = { navController.popBackStack() })
         }
     }
 }
@@ -83,4 +89,5 @@ sealed class AppDestination(val route: String) {
     data object AdminDashboard : AppDestination("admin-dashboard")
     data object AuditLog : AppDestination("audit-log")
     data object RAT : AppDestination("rat")
+    data object BackupRestore : AppDestination("backup-restore")
 }

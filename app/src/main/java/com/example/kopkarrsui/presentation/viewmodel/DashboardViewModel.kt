@@ -2,6 +2,7 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.entity.Member
 import com.example.kopkarrsui.data.local.entity.SHUAllocation
 import com.example.kopkarrsui.data.local.entity.Transaction
@@ -11,11 +12,11 @@ import com.example.kopkarrsui.domain.repository.TransactionRepository
 import com.example.kopkarrsui.domain.repository.PointRepository
 import com.example.kopkarrsui.domain.repository.SHURepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -27,7 +28,8 @@ class DashboardViewModel @Inject constructor(
     private val savingsRepository: SavingsRepository,
     private val transactionRepository: TransactionRepository,
     private val pointRepository: PointRepository,
-    private val shuRepository: SHURepository
+    private val shuRepository: SHURepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _member = MutableStateFlow<Member?>(null)
@@ -52,7 +54,13 @@ class DashboardViewModel @Inject constructor(
     val error: StateFlow<String?> = _error.asStateFlow()
 
     init {
-        loadDashboardData(memberId = 1)
+        val memberId = sessionManager.currentMemberId
+        if (memberId > 0) {
+            loadDashboardData(memberId)
+        } else {
+            // Fallback ke 1 kalau belum login (dev mode)
+            loadDashboardData(1)
+        }
     }
 
     fun loadDashboardData(memberId: Long) {
@@ -72,6 +80,10 @@ class DashboardViewModel @Inject constructor(
                 _isLoading.value = false
             }
         }
+    }
+
+    fun logout(sessionManager: SessionManager) {
+        sessionManager.clearSession()
     }
 
     fun formatRupiah(amount: Long): String = "Rp ${NumberFormat.getInstance(Locale("id", "ID")).format(amount)}"

@@ -2,9 +2,11 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.entity.SavingsAccount
 import com.example.kopkarrsui.domain.repository.SavingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SavingsViewModel @Inject constructor(
-    private val savingsRepository: SavingsRepository
+    private val savingsRepository: SavingsRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _accounts = MutableStateFlow<List<SavingsAccount>>(emptyList())
@@ -32,11 +35,12 @@ class SavingsViewModel @Inject constructor(
     val error: StateFlow<String?> = _error.asStateFlow()
 
     init {
-        loadAccounts(1) // TODO: current member ID
+        val memberId = sessionManager.currentMemberId.takeIf { it > 0 } ?: 1L
+        loadAccounts(memberId)
     }
 
     fun loadAccounts(memberId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             _error.value = null
             try {

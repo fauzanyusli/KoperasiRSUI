@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.kopkarrsui.data.local.dao.AdminDao
 import com.example.kopkarrsui.data.local.dao.AuditLogDao
 import com.example.kopkarrsui.data.local.dao.FinancialStatementDao
@@ -21,6 +22,9 @@ import com.example.kopkarrsui.data.local.entity.PointLedger
 import com.example.kopkarrsui.data.local.entity.SHUAllocation
 import com.example.kopkarrsui.data.local.entity.SavingsAccount
 import com.example.kopkarrsui.data.local.entity.Transaction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(
     entities = [
@@ -59,9 +63,82 @@ abstract class KopkarDatabase : RoomDatabase() {
                     "kopkar_database"
                 )
                     .fallbackToDestructiveMigration()
+                    .addCallback(SeedCallback())
                     .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+    }
+
+    private class SeedCallback : Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            INSTANCE?.let { database ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    seedData(database)
+                }
+            }
+        }
+
+        private suspend fun seedData(database: KopkarDatabase) {
+            val memberDao = database.memberDao()
+            val savingsDao = database.savingsAccountDao()
+
+            // Seed 3 anggota untuk testing
+            val members = listOf(
+                Member(
+                    noAnggota = "KPR-001",
+                    nama = "Budi Santoso",
+                    nik = "3201234567890001",
+                    noHp = "081234567890",
+                    email = "budi@example.com",
+                    alamat = "Jl. Sudirman No. 1, Jakarta",
+                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000 * 3), // 3 tahun lalu
+                    status = Member.MemberStatus.AKTIF,
+                    pinHash = "123456"
+                ),
+                Member(
+                    noAnggota = "KPR-002",
+                    nama = "Siti Rahayu",
+                    nik = "3201234567890002",
+                    noHp = "081234567891",
+                    email = "siti@example.com",
+                    alamat = "Jl. Gatot Subroto No. 5, Jakarta",
+                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000 * 2), // 2 tahun lalu
+                    status = Member.MemberStatus.AKTIF,
+                    pinHash = "123456"
+                ),
+                Member(
+                    noAnggota = "KPR-003",
+                    nama = "Ahmad Fauzi",
+                    nik = "3201234567890003",
+                    noHp = "081234567892",
+                    email = "ahmad@example.com",
+                    alamat = "Jl. Thamrin No. 10, Jakarta",
+                    tglGabung = System.currentTimeMillis() - (365L * 24 * 60 * 60 * 1000), // 1 tahun lalu
+                    status = Member.MemberStatus.AKTIF,
+                    pinHash = "123456"
+                )
+            )
+
+            val memberIds = memberDao.insertAll(members)
+
+            // Seed tabungan untuk masing-masing anggota
+            memberIds.forEachIndexed { index, memberId ->
+                val saldo = when (index) {
+                    0 -> 2_500_000L
+                    1 -> 1_800_000L
+                    else -> 3_200_000L
+                }
+                savingsDao.insert(
+                    SavingsAccount(
+                        memberId = memberId,
+                        jenis = SavingsAccount.SavingsType.WAJIB,
+                        saldo = saldo,
+                        status = SavingsAccount.SavingsStatus.AKTIF
+                    )
+                )
             }
         }
     }

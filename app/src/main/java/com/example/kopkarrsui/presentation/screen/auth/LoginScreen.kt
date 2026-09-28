@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Lock
@@ -29,38 +30,47 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.kopkarrsui.presentation.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
-    var noAnggota by mutableStateOf("")
-    var pin by mutableStateOf("")
-    var showPin by mutableStateOf(false)
-    var isLoading by mutableStateOf(false)
-    var errorMessage by mutableStateOf<String?>(null)
-    val scope = rememberCoroutineScope()
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    var noAnggota by remember { mutableStateOf("") }
+    var pin by remember { mutableStateOf("") }
+    var showPin by remember { mutableStateOf(false) }
+
+    val loginState by viewModel.loginState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(loginState) {
+        if (loginState is LoginViewModel.LoginState.Success) {
+            onLoginSuccess()
+            viewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
@@ -87,7 +97,16 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Masuk ke Akun", fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
-                errorMessage?.let { Text(it, color = Color.Red, fontSize = 12.sp, textAlign = TextAlign.Center) }
+                // Error message
+                if (loginState is LoginViewModel.LoginState.Error) {
+                    Text(
+                        (loginState as LoginViewModel.LoginState.Error).message,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
                 TextField(
                     value = noAnggota,
@@ -100,8 +119,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
                 TextField(
                     value = pin,
-                    onValueChange = { pin = it },
-                    label = { Text("PIN") },
+                    onValueChange = { if (it.length <= 6) pin = it },
+                    label = { Text("PIN (6 digit)") },
                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = { showPin = !showPin }) {
@@ -115,25 +134,13 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 )
 
                 Button(
-                    onClick = {
-                        isLoading = true
-                        errorMessage = null
-                        scope.launch {
-                            delay(1000)
-                            if (noAnggota.isNotBlank() && pin.length >= 4) {
-                                onLoginSuccess()
-                            } else {
-                                errorMessage = "Nomor anggota atau PIN tidak valid"
-                            }
-                            isLoading = false
-                        }
-                    },
+                    onClick = { viewModel.login(noAnggota, pin) },
                     modifier = Modifier.fillMaxWidth().height(48.dp),
-                    enabled = !isLoading,
+                    enabled = loginState !is LoginViewModel.LoginState.Loading,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    if (isLoading) {
+                    if (loginState is LoginViewModel.LoginState.Loading) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(20.dp))
                     } else {
                         Text("Masuk", fontSize = 16.sp, fontWeight = FontWeight.Medium)

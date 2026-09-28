@@ -2,11 +2,13 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.entity.FinancialStatement
 import com.example.kopkarrsui.data.local.entity.SHUAllocation
 import com.example.kopkarrsui.domain.repository.FinancialStatementRepository
 import com.example.kopkarrsui.domain.repository.SHURepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SHUViewModel @Inject constructor(
     private val shuRepository: SHURepository,
-    private val financialStatementRepository: FinancialStatementRepository
+    private val financialStatementRepository: FinancialStatementRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _mySHU = MutableStateFlow<SHUAllocation?>(null)
@@ -38,11 +41,12 @@ class SHUViewModel @Inject constructor(
     val error: StateFlow<String?> = _error.asStateFlow()
 
     init {
-        loadSHU(1) // TODO: current member ID
+        val memberId = sessionManager.currentMemberId.takeIf { it > 0 } ?: 1L
+        loadSHU(memberId)
     }
 
     fun loadSHU(memberId: Long) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _isLoading.value = true
             _error.value = null
             try {
