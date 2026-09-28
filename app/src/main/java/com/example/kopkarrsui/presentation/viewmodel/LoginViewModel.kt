@@ -2,8 +2,10 @@ package com.example.kopkarrsui.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.app.Application
 import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.domain.repository.MemberRepository
+import com.example.kopkarrsui.util.NotificationHelper
 import com.example.kopkarrsui.util.PasswordUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val application: Application
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
@@ -49,6 +52,7 @@ class LoginViewModel @Inject constructor(
                 }
 
                 sessionManager.saveSession(member.id)
+                NotificationHelper.showWelcomeNotification(application, member.nama)
                 _loginState.value = LoginState.Success(member.id)
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(e.message ?: "Gagal login")
