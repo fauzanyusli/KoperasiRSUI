@@ -174,6 +174,7 @@ private fun RegistrationSection() {
     var alamat by remember { mutableStateOf("") }
     var jabatan by remember { mutableStateOf("Anggota") }
     var showSuccess by remember { mutableStateOf(false) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
@@ -203,10 +204,28 @@ private fun RegistrationSection() {
         item { FormField("PIN Transaksi", "", { }, "6 digit angka", isPassword = true) }
         item {
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedButton(onClick = { showSuccess = true }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF2E7D32), contentColor = Color.White), shape = RoundedCornerShape(12.dp)) {
+            OutlinedButton(onClick = { showConfirmDialog = true }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF2E7D32), contentColor = Color.White), shape = RoundedCornerShape(12.dp)) {
                 Icon(Icons.Filled.CheckCircle, contentDescription = null); Spacer(modifier = Modifier.width(8.dp)); Text("Daftarkan Anggota", fontWeight = FontWeight.Bold)
             }
         }
+    }
+
+    // Konfirmasi sebelum daftar
+    if (showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(32.dp)) },
+            title = { Text("Konfirmasi Pendaftaran") },
+            text = { Text("Pastikan data yang diisi sudah benar. Anggota baru akan didaftarkan ke koperasi.") },
+            confirmButton = {
+                TextButton(onClick = { showConfirmDialog = false; showSuccess = true }) {
+                    Text("Ya, Daftarkan", color = Color(0xFF2E7D32))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) { Text("Batal") }
+            }
+        )
     }
 
     if (showSuccess) {

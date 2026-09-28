@@ -61,6 +61,7 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
     var filterType by remember { mutableStateOf<Transaction.TransactionType?>(null) }
+    var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Column {
@@ -100,17 +101,21 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
                     EmptyState(icon = Icons.Filled.ReceiptLong, title = "Belum Ada Transaksi", message = "Transaksi akan muncul di sini")
                 } else {
                     LazyColumn(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(filtered) { tx -> TransactionItem(tx, viewModel) }
+                        items(filtered, key = { it.id }) { tx -> TransactionItem(tx, viewModel, onClick = { selectedTransaction = tx }) }
                     }
                 }
             }
         }
         if (isLoading && transactions.isEmpty()) LoadingOverlay("Memuat transaksi...")
+
+    selectedTransaction?.let { tx ->
+        TransactionDetailScreen(transaction = tx, onBack = { selectedTransaction = null })
+    }
     }
 }
 
 @Composable
-private fun TransactionItem(transaction: Transaction, viewModel: TransactionViewModel) {
+private fun TransactionItem(transaction: Transaction, viewModel: TransactionViewModel, onClick: () -> Unit = {}) {
     val isIncome = transaction.jumlah > 0
     val typeColor = when (transaction.tipe) {
         Transaction.TransactionType.BELANJA -> Color(0xFFFF8F00)
@@ -121,7 +126,7 @@ private fun TransactionItem(transaction: Transaction, viewModel: TransactionView
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth().clickable { },
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         shape = RoundedCornerShape(12.dp)
     ) {
