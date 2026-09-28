@@ -94,6 +94,7 @@ dependencies {
 
     // Coil (Image loading)
     implementation(libs.coil.compose)
+    implementation(libs.bcrypt)
 
     // Testing
     testImplementation(libs.junit)

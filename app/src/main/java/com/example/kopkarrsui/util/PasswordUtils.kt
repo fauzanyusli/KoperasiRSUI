@@ -1,15 +1,15 @@
 package com.example.kopkarrsui.util
 
-import java.security.MessageDigest
+import org.mindrot.jbcrypt.BCrypt
 
 object PasswordUtils {
+    private const val BCRYPT_LOG_ROUNDS = 10
+
     fun hashPin(pin: String): String {
-        val digest = MessageDigest.getInstance("SHA-256")
-        val hashBytes = digest.digest(pin.toByteArray())
-        return hashBytes.joinToString("") { "%02x".format(it) }
+        return BCrypt.hashpw(pin, BCrypt.gensalt(BCRYPT_LOG_ROUNDS))
     }
 
     fun verifyPin(pin: String, hash: String): Boolean {
-        return hashPin(pin) == hash
+        return BCrypt.checkpw(pin, hash)
     }
 }
