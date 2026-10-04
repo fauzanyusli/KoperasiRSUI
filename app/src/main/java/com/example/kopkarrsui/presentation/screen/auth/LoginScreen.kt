@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.auth
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,7 +57,7 @@ import com.example.kopkarrsui.presentation.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (Boolean) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     var noAnggota by remember { mutableStateOf("") }
@@ -67,7 +68,7 @@ fun LoginScreen(
 
     LaunchedEffect(loginState) {
         if (loginState is LoginViewModel.LoginState.Success) {
-            onLoginSuccess()
+            onLoginSuccess((loginState as LoginViewModel.LoginState.Success).isAdmin)
             viewModel.resetState()
         }
     }
@@ -84,8 +85,8 @@ fun LoginScreen(
             Icon(Icons.Filled.AccountBalanceWallet, contentDescription = "", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(40.dp))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text("KopkarRSUI", fontSize = 26.sp, fontWeight = FontWeight.Bold)
-        Text("Aplikasi Anggota Koperasi", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("KopkarRSUI", fontSize = TextSize.s26, fontWeight = FontWeight.Bold)
+        Text("Aplikasi Anggota Koperasi", fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -95,14 +96,14 @@ fun LoginScreen(
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Masuk ke Akun", fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                Text("Masuk ke Akun", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
                 // Error message
                 if (loginState is LoginViewModel.LoginState.Error) {
                     Text(
                         (loginState as LoginViewModel.LoginState.Error).message,
                         color = Color.Red,
-                        fontSize = 12.sp,
+                        fontSize = TextSize.s12,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -143,14 +144,14 @@ fun LoginScreen(
                     if (loginState is LoginViewModel.LoginState.Loading) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(20.dp))
                     } else {
-                        Text("Masuk", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        Text("Masuk", fontSize = TextSize.s16, fontWeight = FontWeight.Medium)
                     }
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Lupa PIN?", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Lupa PIN?", fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(modifier = Modifier.width(4.dp))
-                    TextButton(onClick = { }) { Text("Hubungi Pengurus", fontSize = 13.sp) }
+                    TextButton(onClick = { }) { Text("Hubungi Pengurus", fontSize = TextSize.s13) }
                 }
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -161,15 +162,15 @@ fun LoginScreen(
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Masuk dengan Biometrik", fontSize = 14.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(vertical = 8.dp))
+                    Text("Masuk dengan Biometrik", fontSize = TextSize.s14, fontWeight = FontWeight.Medium, modifier = Modifier.padding(vertical = 8.dp))
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        Text("Belum jadi anggota?", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("Belum jadi anggota?", fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
         TextButton(onClick = { }) { Text("Daftar di koperasi terdekat") }
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Versi 1.0.0", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+        Text("Versi 1.0.0", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
     }
 }

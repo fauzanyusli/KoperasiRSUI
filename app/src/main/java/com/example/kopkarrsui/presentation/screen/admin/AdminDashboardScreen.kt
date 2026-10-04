@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.admin
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,11 +22,13 @@ import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Restore
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -41,11 +44,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.kopkarrsui.presentation.viewmodel.MemberViewModel
 
 @Composable
 fun AdminDashboardScreen(
     onNavigateToAuditLog: () -> Unit = {},
-    onNavigateToBackup: () -> Unit = {}
+    onNavigateToBackup: () -> Unit = {},
+    onLogout: () -> Unit = {},
+    viewModel: MemberViewModel = hiltViewModel()
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -56,17 +63,24 @@ fun AdminDashboardScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1565C0))
+                colors = CardDefaults.cardColors(containerColor = KopkarBlue)
             ) {
                 Row(
                     modifier = Modifier.padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Dashboard Admin", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text("Panel pengurus koperasi", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                        Text("Dashboard Admin", fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Panel pengurus koperasi", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                     }
                     Icon(Icons.Filled.Security, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    IconButton(onClick = {
+                        viewModel.logout()
+                        onLogout()
+                    }) {
+                        Icon(Icons.Filled.Logout, contentDescription = "Keluar", tint = Color.White)
+                    }
                 }
             }
         }
@@ -74,14 +88,14 @@ fun AdminDashboardScreen(
         // Stat cards
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                AdminStatCard("Anggota", "47", Icons.Filled.Group, Color(0xFF2E7D32), Modifier.weight(1f))
-                AdminStatCard("Transaksi", "156", Icons.Filled.Receipt, Color(0xFF1565C0), Modifier.weight(1f))
+                AdminStatCard("Anggota", "47", Icons.Filled.Group, KopkarGreen, Modifier.weight(1f))
+                AdminStatCard("Transaksi", "156", Icons.Filled.Receipt, KopkarBlue, Modifier.weight(1f))
             }
         }
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                AdminStatCard("SHU Total", "Rp 68jt", Icons.Filled.PieChart, Color(0xFF6A1B9A), Modifier.weight(1f))
-                AdminStatCard("Aset", "Rp 500jt", Icons.Filled.TrendingUp, Color(0xFF00897B), Modifier.weight(1f))
+                AdminStatCard("SHU Total", "Rp 68jt", Icons.Filled.PieChart, KopkarPurple, Modifier.weight(1f))
+                AdminStatCard("Aset", "Rp 500jt", Icons.Filled.TrendingUp, KopkarTeal, Modifier.weight(1f))
             }
         }
 
@@ -89,11 +103,11 @@ fun AdminDashboardScreen(
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Aksi Cepat", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Aksi Cepat", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
-                    AdminActionButton("Audit Trail", "Lihat log semua perubahan data", Icons.Filled.Assessment, Color(0xFFFF8F00), onNavigateToAuditLog)
-                    AdminActionButton("Backup Database", "Cadangkan database lokal", Icons.Filled.Backup, Color(0xFF2E7D32), onNavigateToBackup)
-                    AdminActionButton("Restore Database", "Pulihkan dari backup", Icons.Filled.Restore, Color(0xFF1565C0), onNavigateToBackup)
+                    AdminActionButton("Audit Trail", "Lihat log semua perubahan data", Icons.Filled.Assessment, KopkarOrange, onNavigateToAuditLog)
+                    AdminActionButton("Backup Database", "Cadangkan database lokal", Icons.Filled.Backup, KopkarGreen, onNavigateToBackup)
+                    AdminActionButton("Restore Database", "Pulihkan dari backup", Icons.Filled.Restore, KopkarBlue, onNavigateToBackup)
                 }
             }
         }
@@ -102,7 +116,7 @@ fun AdminDashboardScreen(
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Aktivitas Terakhir", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Aktivitas Terakhir", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     listOf(
                         "Budi Santoso setor tabungan wajib" to "2 jam lalu",
@@ -111,8 +125,8 @@ fun AdminDashboardScreen(
                         "Backup database otomatis" to "7 hari lalu"
                     ).forEach { (action, time) ->
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text(action, fontSize = 12.sp, modifier = Modifier.weight(1f))
-                            Text(time, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(action, fontSize = TextSize.s12, modifier = Modifier.weight(1f))
+                            Text(time, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -127,8 +141,8 @@ private fun AdminStatCard(title: String, value: String, icon: ImageVector, color
         Column(modifier = Modifier.padding(12.dp)) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
-            Text(title, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = color)
+            Text(title, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -139,8 +153,8 @@ private fun AdminActionButton(title: String, subtitle: String, icon: ImageVector
         Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-            Text(subtitle, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(title, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+            Text(subtitle, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

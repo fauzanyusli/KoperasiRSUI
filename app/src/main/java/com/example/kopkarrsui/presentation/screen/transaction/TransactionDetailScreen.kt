@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.transaction
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -52,10 +53,10 @@ fun TransactionDetailScreen(
     onBack: () -> Unit
 ) {
     val typeColor = when (transaction.tipe) {
-        Transaction.TransactionType.BELANJA -> Color(0xFFFF8F00)
-        Transaction.TransactionType.SETORAN_TABUNGAN -> Color(0xFF2E7D32)
-        Transaction.TransactionType.PENARIKAN_TABUNGAN -> Color(0xFFC62828)
-        Transaction.TransactionType.PEMBAYARAN_ANGSURAN -> Color(0xFF1565C0)
+        Transaction.TransactionType.BELANJA -> KopkarOrange
+        Transaction.TransactionType.SETORAN_TABUNGAN -> KopkarGreen
+        Transaction.TransactionType.PENARIKAN_TABUNGAN -> KopkarRed
+        Transaction.TransactionType.PEMBAYARAN_ANGSURAN -> KopkarBlue
         Transaction.TransactionType.LAINNYA -> MaterialTheme.colorScheme.primary
     }
     val isIncome = transaction.jumlah > 0
@@ -115,19 +116,19 @@ fun TransactionDetailScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(transaction.tipe.label, fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
+                    Text(transaction.tipe.label, fontSize = TextSize.s14, color = Color.White.copy(alpha = 0.8f))
                     Text(
                         "${if (isIncome) "+" else "-"}Rp ${nf.format(transaction.jumlah)}",
-                        fontSize = 28.sp,
+                        fontSize = TextSize.s28,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     if (transaction.poinDihasilkan > 0) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.Star, contentDescription = null, tint = Color(0xFFFFEB3B), modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.Star, contentDescription = null, tint = KopkarYellow, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("+${nf.format(transaction.poinDihasilkan)} poin", fontSize = 13.sp, color = Color.White.copy(alpha = 0.9f))
+                            Text("+${nf.format(transaction.poinDihasilkan)} poin", fontSize = TextSize.s13, color = Color.White.copy(alpha = 0.9f))
                         }
                     }
                 }
@@ -140,7 +141,7 @@ fun TransactionDetailScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text("Informasi Transaksi", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Informasi Transaksi", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                     DetailRow("ID Transaksi", "#${transaction.id}")
                     DetailRow("Tanggal", sdf.format(Date(transaction.tgl)))
@@ -159,10 +160,10 @@ fun TransactionDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val statusColor = when (transaction.status) {
-                    Transaction.TransactionStatus.SUKSES -> Color(0xFF2E7D32)
-                    Transaction.TransactionStatus.PENDING -> Color(0xFFFF8F00)
-                    Transaction.TransactionStatus.GAGAL -> Color(0xFFC62828)
-                    Transaction.TransactionStatus.DIBATALKAN -> Color(0xFF9E9E9E)
+                    Transaction.TransactionStatus.SUKSES -> KopkarGreen
+                    Transaction.TransactionStatus.PENDING -> KopkarOrange
+                    Transaction.TransactionStatus.GAGAL -> KopkarRed
+                    Transaction.TransactionStatus.DIBATALKAN -> KopkarGray
                 }
                 Box(
                     modifier = Modifier
@@ -175,7 +176,7 @@ fun TransactionDetailScreen(
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             transaction.status.value.replaceFirstChar { it.uppercase() },
-                            fontSize = 13.sp,
+                            fontSize = TextSize.s13,
                             fontWeight = FontWeight.Medium,
                             color = statusColor
                         )
@@ -194,7 +195,7 @@ private fun DetailRow(label: String, value: String) {
             .padding(vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text(label, fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
     }
 }

@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.shu
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -66,14 +67,14 @@ internal fun PerhitunganTab(viewModel: SHUViewModel) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1565C0))
+                colors = CardDefaults.cardColors(containerColor = KopkarBlue)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Perhitungan SHU Otomatis", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("Tahun ${java.time.Year.now().value}", fontSize = 13.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Perhitungan SHU Otomatis", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Tahun ${java.time.Year.now().value}", fontSize = TextSize.s13, color = Color.White.copy(alpha = 0.7f))
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("SHU Total", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
-                    Text(viewModel.formatRupiah(shuTotal), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("SHU Total", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
+                    Text(viewModel.formatRupiah(shuTotal), fontSize = TextSize.s28, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -82,27 +83,27 @@ internal fun PerhitunganTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Alur Perhitungan", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Alur Perhitungan", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    CalculationStep("1", "Laba Bersih Tahunan", viewModel.formatRupiah(labaBersih), "Hasil usaha setelah dikurangi biaya operasional", Color(0xFF1565C0))
-                    CalculationStep("2", "Persentase SHU ke Anggota", "80%", "Bagian laba bersih yang dialokasikan untuk anggota", Color(0xFFFF8F00))
-                    CalculationStep("3", "SHU Total untuk Dibagikan", viewModel.formatRupiah(shuTotal), "Laba bersih \u00D7 persentase SHU", Color(0xFF2E7D32))
-                    CalculationStep("4", "Cadangan (18%)", viewModel.formatRupiah(cadangan), "Untuk pengembangan koperasi", Color(0xFFC62828))
-                    CalculationStep("5", "SHU Bersih ke Anggota", viewModel.formatRupiah(shuDibagikan), "SHU total - cadangan", Color(0xFF6A1B9A))
+                    CalculationStep("1", "Laba Bersih Tahunan", viewModel.formatRupiah(labaBersih), "Hasil usaha setelah dikurangi biaya operasional", KopkarBlue)
+                    CalculationStep("2", "Persentase SHU ke Anggota", "80%", "Bagian laba bersih yang dialokasikan untuk anggota", KopkarOrange)
+                    CalculationStep("3", "SHU Total untuk Dibagikan", viewModel.formatRupiah(shuTotal), "Laba bersih \u00D7 persentase SHU", KopkarGreen)
+                    CalculationStep("4", "Cadangan (18%)", viewModel.formatRupiah(cadangan), "Untuk pengembangan koperasi", KopkarRed)
+                    CalculationStep("5", "SHU Bersih ke Anggota", viewModel.formatRupiah(shuDibagikan), "SHU total - cadangan", KopkarPurple)
                 }
             }
         }
 
         // Rumus (placeholder)
         item {
-            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFFF8F00).copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = KopkarOrange.copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.Info, contentDescription = null, tint = Color(0xFFFF8F00))
+                    Icon(Icons.Filled.Info, contentDescription = null, tint = KopkarOrange)
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text("Rumus Perhitungan", fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                        Text("Rumus detail akan ditambahkan setelah data dikirim.", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Rumus Perhitungan", fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+                        Text("Rumus detail akan ditambahkan setelah data dikirim.", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -112,7 +113,7 @@ internal fun PerhitunganTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Komponen Perhitungan", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Komponen Perhitungan", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     listOf(
                         "Modal Sendiri" to viewModel.formatRupiah(250_000_000),
@@ -122,8 +123,8 @@ internal fun PerhitunganTab(viewModel: SHUViewModel) {
                         "SHU per Anggota (rata-rata)" to viewModel.formatRupiah(shuDibagikan / 47)
                     ).forEach { (label, value) ->
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            Text(label, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(value, fontSize = TextSize.s12, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -136,14 +137,14 @@ internal fun PerhitunganTab(viewModel: SHUViewModel) {
 private fun CalculationStep(num: String, title: String, value: String, desc: String, color: Color) {
     Row(modifier = Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.Top) {
         Box(modifier = Modifier.size(28.dp).background(color, CircleShape), contentAlignment = Alignment.Center) {
-            Text(num, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text(num, fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = Color.White)
         }
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-            Text(desc, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(title, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+            Text(desc, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text(value, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = color)
+        Text(value, fontSize = TextSize.s13, fontWeight = FontWeight.Bold, color = color)
     }
 }
 
@@ -167,14 +168,14 @@ internal fun DistribusiTab(viewModel: SHUViewModel) {
     ) {
         // Header
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF2E7D32))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarGreen)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Distribusi Proporsional", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("Berdasarkan kontribusi anggota", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Distribusi Proporsional", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Berdasarkan kontribusi anggota", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column { Text("Total Didistribusi", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(totalDibagikan), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White) }
-                        Column(horizontalAlignment = Alignment.End) { Text("Anggota", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text("${members.size} orang", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column { Text("Total Didistribusi", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(totalDibagikan), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column(horizontalAlignment = Alignment.End) { Text("Anggota", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text("${members.size} orang", fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White) }
                     }
                 }
             }
@@ -184,7 +185,7 @@ internal fun DistribusiTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Komponen Distribusi", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Komponen Distribusi", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     listOf(
                         "Simpanan Pokok" to "Bobot 10%",
@@ -194,8 +195,8 @@ internal fun DistribusiTab(viewModel: SHUViewModel) {
                         "Frekuensi Transaksi" to "Bobot 15%"
                     ).forEach { (label, bobot) ->
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(bobot, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            Text(label, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(bobot, fontSize = TextSize.s12, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -209,7 +210,7 @@ internal fun DistribusiTab(viewModel: SHUViewModel) {
                     androidx.compose.material3.FilterChip(
                         selected = selectedFilter == i,
                         onClick = { selectedFilter = i },
-                        label = { Text(label, fontSize = 11.sp) }
+                        label = { Text(label, fontSize = TextSize.s11) }
                     )
                 }
             }
@@ -220,28 +221,28 @@ internal fun DistribusiTab(viewModel: SHUViewModel) {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(40.dp).background(Color(0xFF2E7D32).copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
-                            Text(m.nama.take(2).uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                        Box(modifier = Modifier.size(40.dp).background(KopkarGreen.copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+                            Text(m.nama.take(2).uppercase(), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarGreen)
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(m.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                            Text("${m.noAnggota} \u2022 ${m.jabatan}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(m.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
+                            Text("${m.noAnggota} \u2022 ${m.jabatan}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text(viewModel.formatRupiah(m.jumlahSHU), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
-                            Text("${m.persenDistribusi}%", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(viewModel.formatRupiah(m.jumlahSHU), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = KopkarGreen)
+                            Text("${m.persenDistribusi}%", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     LinearProgressIndicator(
                         progress = { (m.persenDistribusi.toFloat() / 100f).coerceIn(0f, 1f) },
                         modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)),
-                        color = Color(0xFF2E7D32),
-                        trackColor = Color(0xFF2E7D32).copy(alpha = 0.15f)
+                        color = KopkarGreen,
+                        trackColor = KopkarGreen.copy(alpha = 0.15f)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Simpanan: ${viewModel.formatRupiah(m.totalSimpanan)}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Simpanan: ${viewModel.formatRupiah(m.totalSimpanan)}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -266,13 +267,13 @@ internal fun RiwayatSHUTab(viewModel: SHUViewModel) {
     ) {
         // Summary card
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF6A1B9A))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarPurple)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Riwayat SHU 5 Tahun", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Riwayat SHU 5 Tahun", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column { Text("Total SHU (5 thn)", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(riwayat.sumOf { it.totalSHU }), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White) }
-                        Column(horizontalAlignment = Alignment.End) { Text("Rata-rata/Tahun", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(riwayat.sumOf { it.totalSHU } / riwayat.size), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column { Text("Total SHU (5 thn)", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(riwayat.sumOf { it.totalSHU }), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column(horizontalAlignment = Alignment.End) { Text("Rata-rata/Tahun", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text(viewModel.formatRupiah(riwayat.sumOf { it.totalSHU } / riwayat.size), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White) }
                     }
                 }
             }
@@ -282,20 +283,20 @@ internal fun RiwayatSHUTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Tren SHU 5 Tahun Terakhir", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Tren SHU 5 Tahun Terakhir", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
                     val maxSHU = riwayat.maxOf { it.totalSHU }
                     riwayat.reversed().forEach { r ->
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(r.tahun, fontSize = 12.sp, modifier = Modifier.width(40.dp))
+                            Text(r.tahun, fontSize = TextSize.s12, modifier = Modifier.width(40.dp))
                             LinearProgressIndicator(
                                 progress = { (r.totalSHU.toFloat() / maxSHU).coerceIn(0f, 1f) },
                                 modifier = Modifier.weight(1f).height(16.dp).clip(RoundedCornerShape(4.dp)),
-                                color = Color(0xFF6A1B9A),
-                                trackColor = Color(0xFF6A1B9A).copy(alpha = 0.15f)
+                                color = KopkarPurple,
+                                trackColor = KopkarPurple.copy(alpha = 0.15f)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(viewModel.formatRupiah(r.totalSHU), fontSize = 11.sp, fontWeight = FontWeight.Medium, modifier = Modifier.width(100.dp), textAlign = TextAlign.End)
+                            Text(viewModel.formatRupiah(r.totalSHU), fontSize = TextSize.s11, fontWeight = FontWeight.Medium, modifier = Modifier.width(100.dp), textAlign = TextAlign.End)
                         }
                     }
                 }
@@ -304,25 +305,25 @@ internal fun RiwayatSHUTab(viewModel: SHUViewModel) {
 
         // Detail per tahun
         items(riwayat) { r ->
-            val statusColor = if (r.status == "Dicairkan") Color(0xFF2E7D32) else Color(0xFFFF8F00)
+            val statusColor = if (r.status == "Dicairkan") KopkarGreen else KopkarOrange
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column {
-                            Text("Tahun ${r.tahun}", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                            Text("${r.jumlahAnggota} anggota", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Tahun ${r.tahun}", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
+                            Text("${r.jumlahAnggota} anggota", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Column(horizontalAlignment = Alignment.End) {
-                            Text(viewModel.formatRupiah(r.totalSHU), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF6A1B9A))
-                            Text(r.status, fontSize = 11.sp, color = statusColor)
+                            Text(viewModel.formatRupiah(r.totalSHU), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = KopkarPurple)
+                            Text(r.status, fontSize = TextSize.s11, color = statusColor)
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     HorizontalDivider()
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Rata-rata per anggota", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(viewModel.formatRupiah(r.rataRataPerAnggota), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text("Rata-rata per anggota", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(viewModel.formatRupiah(r.rataRataPerAnggota), fontSize = TextSize.s12, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -342,10 +343,10 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
     ) {
         // Header
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF1565C0))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarBlue)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Laporan Detail SHU", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("Tahun ${java.time.Year.now().value} \u2022 Anggota: KPR-001", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Laporan Detail SHU", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Tahun ${java.time.Year.now().value} \u2022 Anggota: KPR-001", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                 }
             }
         }
@@ -355,16 +356,16 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
             val status = mySHU?.status
             val statusLabel = status?.label ?: "Belum Dihitung"
             val statusColor = when (status) {
-                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DIHITUNG -> Color(0xFFFF8F00)
-                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DIBAGIKAN -> Color(0xFF2E7D32)
-                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DICAIRKAN -> Color(0xFF1565C0)
+                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DIHITUNG -> KopkarOrange
+                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DIBAGIKAN -> KopkarGreen
+                com.example.kopkarrsui.data.local.entity.SHUAllocation.SHUStatus.DICAIRKAN -> KopkarBlue
                 else -> Color.Gray
             }
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = statusColor.copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = statusColor)
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column { Text("Status SHU", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(statusLabel, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = statusColor) }
+                    Column { Text("Status SHU", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(statusLabel, fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = statusColor) }
                 }
             }
         }
@@ -373,7 +374,7 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Detail Perhitungan SHU Anda", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Detail Perhitungan SHU Anda", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
                     listOf(
                         "Simpanan Pokok" to "Rp 100.000",
@@ -384,15 +385,15 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
                         "Kontribusi terhadap SHU" to "4.8%"
                     ).forEach { (label, value) ->
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text(label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                            Text(label, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(value, fontSize = TextSize.s12, fontWeight = FontWeight.Medium)
                         }
                         HorizontalDivider()
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("SHU Anda", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
-                        Text(viewModel.formatRupiah(mySHU?.jumlah ?: 3_200_000), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
+                        Text("SHU Anda", fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = KopkarBlue)
+                        Text(viewModel.formatRupiah(mySHU?.jumlah ?: 3_200_000), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = KopkarBlue)
                     }
                 }
             }
@@ -402,7 +403,7 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Timeline", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Timeline", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
                     TimelineItem("Perhitungan SHU", "15 Jan 2025", true)
                     TimelineItem("Pengumuman di RAT", "20 Jan 2025", true)
@@ -417,10 +418,10 @@ internal fun LaporanDetailTab(viewModel: SHUViewModel) {
 @Composable
 private fun TimelineItem(title: String, date: String, done: Boolean) {
     Row(modifier = Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        Box(modifier = Modifier.size(12.dp).background(if (done) Color(0xFF2E7D32) else Color.Gray.copy(alpha = 0.3f), CircleShape))
+        Box(modifier = Modifier.size(12.dp).background(if (done) KopkarGreen else Color.Gray.copy(alpha = 0.3f), CircleShape))
         Spacer(modifier = Modifier.width(12.dp))
-        Column(modifier = Modifier.weight(1f)) { Text(title, fontSize = 12.sp, fontWeight = FontWeight.Medium); Text(date, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-        if (done) Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(16.dp))
+        Column(modifier = Modifier.weight(1f)) { Text(title, fontSize = TextSize.s12, fontWeight = FontWeight.Medium); Text(date, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        if (done) Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(16.dp))
     }
 }
 
@@ -443,10 +444,10 @@ internal fun TransparansiTab(viewModel: SHUViewModel) {
     ) {
         // Header
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF00897B))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarTeal)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Transparansi Pembagian SHU", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("Hak Anda untuk mengetahui", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Transparansi Pembagian SHU", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Hak Anda untuk mengetahui", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                 }
             }
         }
@@ -455,17 +456,17 @@ internal fun TransparansiTab(viewModel: SHUViewModel) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Alokasi SHU", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Alokasi SHU", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                        PieLegend(Color(0xFF2E7D32), "Anggota", "82%")
-                        PieLegend(Color(0xFFFF8F00), "Cadangan", "18%")
+                        PieLegend(KopkarGreen, "Anggota", "82%")
+                        PieLegend(KopkarOrange, "Cadangan", "18%")
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     // Simple bar representation
                     Row(modifier = Modifier.fillMaxWidth().height(24.dp).clip(RoundedCornerShape(12.dp))) {
-                        Box(modifier = Modifier.weight(82f).background(Color(0xFF2E7D32)))
-                        Box(modifier = Modifier.weight(18f).background(Color(0xFFFF8F00)))
+                        Box(modifier = Modifier.weight(82f).background(KopkarGreen))
+                        Box(modifier = Modifier.weight(18f).background(KopkarOrange))
                     }
                 }
             }
@@ -475,9 +476,9 @@ internal fun TransparansiTab(viewModel: SHUViewModel) {
         items(data) { item ->
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(12.dp)) {
-                    Text(item.judul, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                    Text(item.nilai, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF00897B))
-                    Text(item.keterangan, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(item.judul, fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
+                    Text(item.nilai, fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = KopkarTeal)
+                    Text(item.keterangan, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -489,8 +490,8 @@ internal fun TransparansiTab(viewModel: SHUViewModel) {
                     Icon(Icons.Filled.Info, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
-                        Text("Catatan", fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        Text("Data perhitungan bersifat sementara dan akan diperbarui setelah data rumin dikirim. Semua anggota berhak melihat detail pembagian SHU.", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Catatan", fontSize = TextSize.s12, fontWeight = FontWeight.Bold)
+                        Text("Data perhitungan bersifat sementara dan akan diperbarui setelah data rumin dikirim. Semua anggota berhak melihat detail pembagian SHU.", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -503,7 +504,7 @@ private fun PieLegend(color: Color, label: String, pct: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(modifier = Modifier.size(12.dp).background(color, RoundedCornerShape(3.dp)))
         Spacer(modifier = Modifier.width(6.dp))
-        Text("$label ($pct)", fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        Text("$label ($pct)", fontSize = TextSize.s12, fontWeight = FontWeight.Medium)
     }
 }
 

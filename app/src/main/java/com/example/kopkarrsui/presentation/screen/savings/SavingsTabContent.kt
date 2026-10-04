@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.savings
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.kopkarrsui.data.local.entity.SavingsAccount
 import com.example.kopkarrsui.presentation.component.EmptyState
 import com.example.kopkarrsui.presentation.viewmodel.SavingsViewModel
+import com.example.kopkarrsui.util.formatRupiah
 
 // ═══ SIMPANAN TAB CONTENT ═══
 
@@ -57,17 +59,17 @@ internal fun SimpananPokok() {
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item { InfoCard("Simpanan Pokok", "Simpanan satu kali saat menjadi anggota", Icons.Filled.Calculate, Color(0xFF1565C0)) }
+        item { InfoCard("Simpanan Pokok", "Simpanan satu kali saat menjadi anggota", Icons.Filled.Calculate, KopkarBlue) }
         item {
             DetailCard(
                 listOf("Jumlah" to "Rp 100.000", "Status" to if (paid) "Lunas" else "Belum Bayar", "Tanggal" to "15 Jan 2020", "Bunga" to "Tidak ada"),
-                if (paid) Color(0xFF2E7D32) else Color(0xFFC62828)
+                if (paid) KopkarGreen else KopkarRed
             )
         }
         if (!paid) {
-            item { PrimaryButton("Bayar Simpanan Pokok", Icons.Filled.Calculate, Color(0xFF1565C0)) { showOk = true } }
+            item { PrimaryButton("Bayar Simpanan Pokok", Icons.Filled.Calculate, KopkarBlue) { showOk = true } }
         } else {
-            item { StatusCard("Simpanan Pokok Lunas", "Anda sudah membayar simpanan pokok", Color(0xFF2E7D32)) }
+            item { StatusCard("Simpanan Pokok Lunas", "Anda sudah membayar simpanan pokok", KopkarGreen) }
         }
     }
     if (showOk) SuccessDialog("Simpanan pokok Rp 100.000 telah terbayar.") { showOk = false }
@@ -82,22 +84,22 @@ internal fun SimpananWajib(vm: SavingsViewModel) {
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF2E7D32))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarGreen)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Simpanan Wajib", fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
-                    Text(vm.formatRupiah(saldo), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Simpanan Wajib", fontSize = TextSize.s14, color = Color.White.copy(alpha = 0.8f))
+                    Text(vm.formatRupiah(saldo), fontSize = TextSize.s28, fontWeight = FontWeight.Bold, color = Color.White)
                     Spacer(modifier = Modifier.height(12.dp))
                     LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)), color = Color.White, trackColor = Color.White.copy(alpha = 0.3f))
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Target: Rp 10.000.000", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f))
-                        Text("${(progress * 100).toInt()}%", fontSize = 11.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text("Target: Rp 10.000.000", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f))
+                        Text("${(progress * 100).toInt()}%", fontSize = TextSize.s11, color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
             }
         }
         item { InfoDetailCard(listOf("Bunga/Tahun" to "3%", "Setoran Min" to "Rp 100.000/bulan", "Perhitungan" to "Bulanan, masuk ke saldo", "Penarikan" to "Bisa kapan saja")) }
-        item { DualButton("Setor", Color(0xFF2E7D32), "Tarik", Color(0xFFC62828)) }
+        item { DualButton("Setor", KopkarGreen, "Tarik", KopkarRed) }
     }
 }
 
@@ -109,17 +111,17 @@ internal fun SimpananSukarela(vm: SavingsViewModel) {
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
-            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF6A1B9A))) {
+            Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = KopkarPurple)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Simpanan Sukarela", fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f))
-                    Text(vm.formatRupiah(saldo), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Simpanan Sukarela", fontSize = TextSize.s14, color = Color.White.copy(alpha = 0.8f))
+                    Text(vm.formatRupiah(saldo), fontSize = TextSize.s28, fontWeight = FontWeight.Bold, color = Color.White)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Bunga 5% per tahun", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Bunga 5% per tahun", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                 }
             }
         }
         item { InfoDetailCard(listOf("Bunga/Tahun" to "5%", "Setoran Min" to "Rp 50.000", "Perhitungan" to "Bulanan, masuk ke saldo", "Penarikan" to "Bisa kapan saja")) }
-        item { DualButton("Setor", Color(0xFF6A1B9A), "Tarik", Color(0xFFC62828)) }
+        item { DualButton("Setor", KopkarPurple, "Tarik", KopkarRed) }
     }
 }
 
@@ -134,23 +136,23 @@ internal fun RiwayatSimpanan() {
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = true, onClick = {}, label = { Text("Semua", fontSize = 11.sp) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
-            FilterChip(selected = false, onClick = {}, label = { Text("30 Hari", fontSize = 11.sp) })
+            FilterChip(selected = true, onClick = {}, label = { Text("Semua", fontSize = TextSize.s11) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
+            FilterChip(selected = false, onClick = {}, label = { Text("30 Hari", fontSize = TextSize.s11) })
         }
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(data) { h ->
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                     Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(40.dp).background(if (h.isIncome) Color(0xFF2E7D32).copy(alpha = 0.12f) else Color(0xFFC62828).copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
-                            Icon(if (h.isIncome) Icons.Filled.ArrowDownward else Icons.Filled.ArrowUpward, contentDescription = null, tint = if (h.isIncome) Color(0xFF2E7D32) else Color(0xFFC62828), modifier = Modifier.size(20.dp))
+                        Box(modifier = Modifier.size(40.dp).background(if (h.isIncome) KopkarGreen.copy(alpha = 0.12f) else KopkarRed.copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+                            Icon(if (h.isIncome) Icons.Filled.ArrowDownward else Icons.Filled.ArrowUpward, contentDescription = null, tint = if (h.isIncome) KopkarGreen else KopkarRed, modifier = Modifier.size(20.dp))
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(h.deskripsi, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                            Text("${h.jenis} \u2022 ${h.tanggal}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(h.deskripsi, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+                            Text("${h.jenis} \u2022 ${h.tanggal}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        Text("${if (h.isIncome) "+" else "-"}${formatRupiah(kotlin.math.abs(h.jumlah))}", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (h.isIncome) Color(0xFF2E7D32) else Color(0xFFC62828))
+                        Text("${if (h.isIncome) "+" else "-"}${formatRupiah(kotlin.math.abs(h.jumlah))}", fontSize = TextSize.s13, fontWeight = FontWeight.Bold, color = if (h.isIncome) KopkarGreen else KopkarRed)
                     }
                 }
             }
@@ -173,9 +175,9 @@ internal fun LaporanSimpanan() {
         Spacer(modifier = Modifier.height(12.dp))
         Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer), shape = RoundedCornerShape(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Pokok", fontSize = 11.sp); Text(formatRupiah(data.sumOf { it.pokok }), fontSize = 13.sp, fontWeight = FontWeight.Bold) }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Wajib", fontSize = 11.sp); Text(formatRupiah(data.sumOf { it.wajib }), fontSize = 13.sp, fontWeight = FontWeight.Bold) }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Sukarela", fontSize = 11.sp); Text(formatRupiah(data.sumOf { it.sukarela }), fontSize = 13.sp, fontWeight = FontWeight.Bold) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Pokok", fontSize = TextSize.s11); Text(formatRupiah(data.sumOf { it.pokok }), fontSize = TextSize.s13, fontWeight = FontWeight.Bold) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Wajib", fontSize = TextSize.s11); Text(formatRupiah(data.sumOf { it.wajib }), fontSize = TextSize.s13, fontWeight = FontWeight.Bold) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Sukarela", fontSize = TextSize.s11); Text(formatRupiah(data.sumOf { it.sukarela }), fontSize = TextSize.s13, fontWeight = FontWeight.Bold) }
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -184,21 +186,21 @@ internal fun LaporanSimpanan() {
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(36.dp).background(Color(0xFF1565C0).copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
-                                Text(m.nama.take(2).uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1565C0))
+                            Box(modifier = Modifier.size(36.dp).background(KopkarBlue.copy(alpha = 0.12f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) {
+                                Text(m.nama.take(2).uppercase(), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarBlue)
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(m.nama, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                                Text("${m.noAnggota} \u2022 ${m.jabatan}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(m.nama, fontSize = TextSize.s13, fontWeight = FontWeight.Bold)
+                                Text("${m.noAnggota} \u2022 ${m.jabatan}", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Column { Text("Pokok", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.pokok), fontSize = 12.sp) }
-                            Column { Text("Wajib", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.wajib), fontSize = 12.sp) }
-                            Column { Text("Sukarela", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.sukarela), fontSize = 12.sp) }
-                            Column(horizontalAlignment = Alignment.End) { Text("Total", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.pokok + m.wajib + m.sukarela), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1565C0)) }
+                            Column { Text("Pokok", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.pokok), fontSize = TextSize.s12) }
+                            Column { Text("Wajib", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.wajib), fontSize = TextSize.s12) }
+                            Column { Text("Sukarela", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.sukarela), fontSize = TextSize.s12) }
+                            Column(horizontalAlignment = Alignment.End) { Text("Total", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(m.pokok + m.wajib + m.sukarela), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarBlue) }
                         }
                     }
                 }
@@ -217,23 +219,23 @@ internal fun LoanTypeSection(type: LoanType) {
         LoanType.DARURAT -> listOf(Loan(4, 4, "Dewi Lestari", type, 3_000_000.0, 1_500_000.0, 525_000.0, "10 Sep 2025", "10 Mar 2026", Loan.LoanStatus.AKTIF, 6))
     }
     val total = loans.filter { it.status == Loan.LoanStatus.AKTIF }.sumOf { it.sisaBayar }
-    val hc = when (type) { LoanType.KONSUMTIF -> Color(0xFF1565C0); LoanType.PRODUKTIF -> Color(0xFF2E7D32); LoanType.DARURAT -> Color(0xFFC62828) }
+    val hc = when (type) { LoanType.KONSUMTIF -> KopkarBlue; LoanType.PRODUKTIF -> KopkarGreen; LoanType.DARURAT -> KopkarRed }
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
             Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = hc)) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text(type.label, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text(type.description, fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f))
+                    Text(type.label, fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(type.description, fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.8f))
                     Spacer(modifier = Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column { Text("Maks", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text(formatRupiah(type.maxAmount), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White) }
-                        Column(horizontalAlignment = Alignment.End) { Text("Bunga/Tahun", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text("${type.bungaPersen}%", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column { Text("Maks", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text(formatRupiah(type.maxAmount), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column(horizontalAlignment = Alignment.End) { Text("Bunga/Tahun", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text("${type.bungaPersen}%", fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White) }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column { Text("Tenor", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text("${type.tenorBulan} bulan", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White) }
-                        Column(horizontalAlignment = Alignment.End) { Text("Total Aktif", fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)); Text(formatRupiah(total), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column { Text("Tenor", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text("${type.tenorBulan} bulan", fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Column(horizontalAlignment = Alignment.End) { Text("Total Aktif", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)); Text(formatRupiah(total), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White) }
                     }
                 }
             }
@@ -266,17 +268,17 @@ internal fun SimulasiSection() {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Jenis Pinjaman", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text("Jenis Pinjaman", fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         types.forEachIndexed { i, t ->
-                            FilterChip(selected = sel == i, onClick = { sel = i }, label = { Text(t.label.split(" ").last(), fontSize = 11.sp) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
+                            FilterChip(selected = sel == i, onClick = { sel = i }, label = { Text(t.label.split(" ").last(), fontSize = TextSize.s11) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
                         }
                     }
                     androidx.compose.material3.OutlinedTextField(value = if (jumlah > 0) jumlah.toLong().toString() else "", onValueChange = { jumlah = it.toDoubleOrNull() ?: 0.0 }, modifier = Modifier.fillMaxWidth(), label = { Text("Jumlah Pinjaman") }, prefix = { Text("Rp ") }, keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number), singleLine = true, shape = RoundedCornerShape(12.dp))
-                    Text("Tenor: $tenor bulan", fontSize = 13.sp)
+                    Text("Tenor: $tenor bulan", fontSize = TextSize.s13)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         listOf(6, 12, 18, 24).forEach { t ->
-                            FilterChip(selected = tenor == t, onClick = { tenor = t }, label = { Text("${t}bln", fontSize = 11.sp) })
+                            FilterChip(selected = tenor == t, onClick = { tenor = t }, label = { Text("${t}bln", fontSize = TextSize.s11) })
                         }
                     }
                 }
@@ -286,14 +288,14 @@ internal fun SimulasiSection() {
             item {
                 Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)) {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Hasil Simulasi", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Hasil Simulasi", fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White)
                         androidx.compose.material3.HorizontalDivider(color = Color.White.copy(alpha = 0.3f))
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Pokok", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f)); Text(formatRupiah(jumlah), fontSize = 12.sp, color = Color.White) }
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Bunga/Tahun", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f)); Text("$bunga%", fontSize = 12.sp, color = Color.White) }
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Tenor", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f)); Text("$tenor bulan", fontSize = 12.sp, color = Color.White) }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Pokok", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.8f)); Text(formatRupiah(jumlah), fontSize = TextSize.s12, color = Color.White) }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Bunga/Tahun", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.8f)); Text("$bunga%", fontSize = TextSize.s12, color = Color.White) }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Tenor", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.8f)); Text("$tenor bulan", fontSize = TextSize.s12, color = Color.White) }
                         androidx.compose.material3.HorizontalDivider(color = Color.White.copy(alpha = 0.3f))
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Cicilan/Bulan", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = Color.White); Text(formatRupiah(cicilan), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White) }
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Total Bayar", fontSize = 12.sp, color = Color.White.copy(alpha = 0.8f)); Text(formatRupiah(cicilan * tenor), fontSize = 12.sp, color = Color.White) }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Cicilan/Bulan", fontSize = TextSize.s13, fontWeight = FontWeight.Bold, color = Color.White); Text(formatRupiah(cicilan), fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White) }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Total Bayar", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.8f)); Text(formatRupiah(cicilan * tenor), fontSize = TextSize.s12, color = Color.White) }
                     }
                 }
             }
@@ -309,16 +311,16 @@ internal fun SimulasiSection() {
 @Composable
 internal fun CicilanOtomatis() {
     val data = listOf(
-        CicilanItem(1, "Budi Santoso", "Konsumtif", 437_500.0, 5, 12, "Aktif", Color(0xFF1565C0)),
-        CicilanItem(3, "Budi Santoso", "Produktif", 916_667.0, 3, 24, "Aktif", Color(0xFF2E7D32)),
-        CicilanItem(4, "Dewi Lestari", "Darurat", 525_000.0, 2, 6, "Aktif", Color(0xFFC62828))
+        CicilanItem(1, "Budi Santoso", "Konsumtif", 437_500.0, 5, 12, "Aktif", KopkarBlue),
+        CicilanItem(3, "Budi Santoso", "Produktif", 916_667.0, 3, 24, "Aktif", KopkarGreen),
+        CicilanItem(4, "Dewi Lestari", "Darurat", 525_000.0, 2, 6, "Aktif", KopkarRed)
     )
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer), shape = RoundedCornerShape(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("${data.size}", fontSize = 20.sp, fontWeight = FontWeight.Bold); Text("Aktif", fontSize = 11.sp) }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text(formatRupiah(data.sumOf { it.jumlahCicilan }), fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("Total/Bulan", fontSize = 11.sp) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("${data.size}", fontSize = TextSize.s20, fontWeight = FontWeight.Bold); Text("Aktif", fontSize = TextSize.s11) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) { Text(formatRupiah(data.sumOf { it.jumlahCicilan }), fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text("Total/Bulan", fontSize = TextSize.s11) }
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -327,15 +329,15 @@ internal fun CicilanOtomatis() {
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                            Column { Text(c.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("Pinjaman ${c.jenis}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                            Column(horizontalAlignment = Alignment.End) { Text(formatRupiah(c.jumlahCicilan), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = c.color); Text("Per bulan", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                            Column { Text(c.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text("Pinjaman ${c.jenis}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                            Column(horizontalAlignment = Alignment.End) { Text(formatRupiah(c.jumlahCicilan), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = c.color); Text("Per bulan", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         LinearProgressIndicator(progress = { c.bulanDibayar.toFloat() / c.totalBulan }, modifier = Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)), color = c.color, trackColor = c.color.copy(alpha = 0.2f))
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("Bulan ${c.bulanDibayar}/${c.totalBulan}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("${((c.bulanDibayar.toFloat() / c.totalBulan) * 100).toInt()}%", fontSize = 11.sp, color = c.color, fontWeight = FontWeight.Medium)
+                            Text("Bulan ${c.bulanDibayar}/${c.totalBulan}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("${((c.bulanDibayar.toFloat() / c.totalBulan) * 100).toInt()}%", fontSize = TextSize.s11, color = c.color, fontWeight = FontWeight.Medium)
                         }
                     }
                 }

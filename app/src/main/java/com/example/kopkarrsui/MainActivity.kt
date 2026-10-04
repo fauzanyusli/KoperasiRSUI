@@ -13,8 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.kopkarrsui.presentation.component.KopkarBottomNavBar
+import com.example.kopkarrsui.presentation.navigation.AppDestination
 import com.example.kopkarrsui.presentation.navigation.AppNavHost
 import com.example.kopkarrsui.ui.theme.KopkarRSUITheme
 import com.example.kopkarrsui.util.NotificationHelper
@@ -42,9 +46,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             KopkarRSUITheme {
                 val navController = rememberNavController()
+                val currentRoute by navController.currentBackStackEntryAsState()
+                val showBottomBar = currentRoute?.destination?.route != AppDestination.AuthLogin.route
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { KopkarBottomNavBar(navController = navController) }
+                    bottomBar = { if (showBottomBar) KopkarBottomNavBar(navController = navController) }
                 ) { innerPadding ->
                     AppNavHost(
                         navController = navController,

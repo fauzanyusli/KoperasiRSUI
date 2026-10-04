@@ -125,6 +125,15 @@ abstract class KopkarDatabase : RoomDatabase() {
 
             val memberIds = memberDao.insertAll(members)
 
+            // Seed pengurus: KPR-001 sebagai Ketua (login -> AdminDashboard)
+            database.adminDao().insert(
+                Admin(
+                    memberId = memberIds[0],
+                    role = Admin.AdminRole.KETUA,
+                    izinJson = null
+                )
+            )
+
             // Seed tabungan untuk masing-masing anggota
             memberIds.forEachIndexed { index, memberId ->
                 val saldo = when (index) {

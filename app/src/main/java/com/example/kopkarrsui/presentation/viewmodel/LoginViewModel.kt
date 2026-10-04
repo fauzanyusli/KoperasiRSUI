@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import android.app.Application
 import com.example.kopkarrsui.data.local.SessionManager
+import com.example.kopkarrsui.data.local.dao.AdminDao
 import com.example.kopkarrsui.domain.repository.MemberRepository
 import com.example.kopkarrsui.util.NotificationHelper
 import com.example.kopkarrsui.util.PasswordUtils
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
+    private val adminDao: AdminDao,
     private val sessionManager: SessionManager,
     private val application: Application
 ) : ViewModel() {
@@ -53,7 +55,10 @@ class LoginViewModel @Inject constructor(
 
                 sessionManager.saveSession(member.id)
                 NotificationHelper.showWelcomeNotification(application, member.nama)
-                _loginState.value = LoginState.Success(member.id)
+
+                // Role routing: member with active admin record (pengurus/admin) -> AdminDashboard
+                val isAdmin = adminDao.getActiveByMemberId(member.id).firstOrNull() != null
+                _loginState.value = LoginState.Success(member.id, isAdmin)
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(e.message ?: "Gagal login")
             }
@@ -67,7 +72,7 @@ class LoginViewModel @Inject constructor(
     sealed class LoginState {
         data object Idle : LoginState()
         data object Loading : LoginState()
-        data class Success(val memberId: Long) : LoginState()
+        data class Success(val memberId: Long, val isAdmin: Boolean = false) : LoginState()
         data class Error(val message: String) : LoginState()
     }
 }

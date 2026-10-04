@@ -18,7 +18,9 @@ class SessionManager @Inject constructor(
     }
 
     var currentMemberId: Long
-        get() = prefs.getLong(KEY_MEMBER_ID, -1L)
+        // ponytail: dev mode — login dilewati, default ke member seed KPR-001 (id 1).
+        // Aktifin login lagi: ubah default ke -1L + startDestination AuthLogin di AppNavHost.
+        get() = prefs.getLong(KEY_MEMBER_ID, 1L)
         set(value) = prefs.edit().putLong(KEY_MEMBER_ID, value).apply()
 
     var isLoggedIn: Boolean

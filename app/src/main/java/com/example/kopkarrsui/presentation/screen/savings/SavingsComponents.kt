@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.savings
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,13 +31,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kopkarrsui.util.formatRupiah
 
 @Composable fun InfoCard(title: String, subtitle: String, icon: ImageVector, color: Color) {
     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(32.dp))
             Spacer(modifier = Modifier.width(12.dp))
-            Column { Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold); Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            Column { Text(title, fontSize = TextSize.s16, fontWeight = FontWeight.Bold); Text(subtitle, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     }
 }
@@ -46,8 +48,8 @@ import androidx.compose.ui.unit.sp
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             rows.forEachIndexed { index, (label, value) ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(value, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = if (label == "Status") statusColor else MaterialTheme.colorScheme.onSurface)
+                    Text(label, fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(value, fontSize = TextSize.s13, fontWeight = FontWeight.Bold, color = if (label == "Status") statusColor else MaterialTheme.colorScheme.onSurface)
                 }
                 if (index < rows.lastIndex) HorizontalDivider()
             }
@@ -60,8 +62,8 @@ import androidx.compose.ui.unit.sp
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             rows.forEach { (label, value) ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(value, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                    Text(label, fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(value, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -73,7 +75,7 @@ import androidx.compose.ui.unit.sp
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = color)
             Spacer(modifier = Modifier.width(12.dp))
-            Column { Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = color); Text(subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            Column { Text(title, fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = color); Text(subtitle, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     }
 }
@@ -92,24 +94,24 @@ import androidx.compose.ui.unit.sp
 }
 
 @Composable fun SuccessDialog(message: String, onDismiss: () -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(48.dp)) }, title = { Text("Berhasil!") }, text = { Text(message) }, confirmButton = { TextButton(onClick = onDismiss) { Text("OK") } })
+    AlertDialog(onDismissRequest = onDismiss, icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(48.dp)) }, title = { Text("Berhasil!") }, text = { Text(message) }, confirmButton = { TextButton(onClick = onDismiss) { Text("OK") } })
 }
 
 @Composable fun LoanCard(loan: Loan) {
-    val statusColor = when (loan.status) { Loan.LoanStatus.AKTIF -> Color(0xFF1565C0); Loan.LoanStatus.LUNAS -> Color(0xFF2E7D32); Loan.LoanStatus.MACET -> Color(0xFFC62828) }
+    val statusColor = when (loan.status) { Loan.LoanStatus.AKTIF -> KopkarBlue; Loan.LoanStatus.LUNAS -> KopkarGreen; Loan.LoanStatus.MACET -> KopkarRed }
     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Column { Text(loan.namaPeminjam, fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("${loan.jenis.label} \u2022 ${loan.tenorBulan} bulan", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                Text(loan.status.label, fontSize = 12.sp, color = statusColor, fontWeight = FontWeight.Medium)
+                Column { Text(loan.namaPeminjam, fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text("${loan.jenis.label} \u2022 ${loan.tenorBulan} bulan", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                Text(loan.status.label, fontSize = TextSize.s12, color = statusColor, fontWeight = FontWeight.Medium)
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column { Text("Pinjaman", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(loan.jumlah), fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                Column(horizontalAlignment = Alignment.End) { Text("Sisa Bayar", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(loan.sisaBayar), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = statusColor) }
+                Column { Text("Pinjaman", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(loan.jumlah), fontSize = TextSize.s12, fontWeight = FontWeight.Bold) }
+                Column(horizontalAlignment = Alignment.End) { Text("Sisa Bayar", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant); Text(formatRupiah(loan.sisaBayar), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = statusColor) }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text("Cicilan: ${formatRupiah(loan.cicilanBulanan)}/bulan", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("Cicilan: ${formatRupiah(loan.cicilanBulanan)}/bulan", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

@@ -29,6 +29,10 @@ class MemberViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    fun logout() {
+        sessionManager.clearSession()
+    }
+
     init {
         val memberId = sessionManager.currentMemberId.takeIf { it > 0 } ?: 1L
         loadMember(memberId)

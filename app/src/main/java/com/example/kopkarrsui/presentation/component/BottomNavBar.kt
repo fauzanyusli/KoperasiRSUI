@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.kopkarrsui.presentation.component
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
@@ -62,7 +63,7 @@ fun KopkarBottomNavBar(navController: NavController) {
                     Text(
                         text = item.label,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-                        fontSize = 12.sp
+                        fontSize = TextSize.s12
                     )
                 }
             )

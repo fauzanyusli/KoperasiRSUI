@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.text.NumberFormat
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,7 +60,7 @@ class SHUViewModel @Inject constructor(
         }
     }
 
-    fun formatRupiah(amount: Long): String = "Rp ${NumberFormat.getInstance(Locale("id", "ID")).format(amount)}"
+    fun formatRupiah(amount: Long): String = com.example.kopkarrsui.util.formatRupiah(amount)
     fun getSHUStatusLabel(status: SHUAllocation.SHUStatus): String = status.label
     fun getFinancialStatusLabel(status: FinancialStatement.FinancialStatus): String = status.label
 }

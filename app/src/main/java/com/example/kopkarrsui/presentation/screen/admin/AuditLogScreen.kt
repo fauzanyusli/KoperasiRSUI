@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.admin
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -62,8 +63,8 @@ fun AuditLogScreen() {
         item {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("Audit Trail", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Text("${sampleLogs.size} log tercatat", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Audit Trail", fontSize = TextSize.s20, fontWeight = FontWeight.Bold)
+                    Text("${sampleLogs.size} log tercatat", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Icon(Icons.Filled.Refresh, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             }
@@ -76,7 +77,7 @@ fun AuditLogScreen() {
                     androidx.compose.material3.FilterChip(
                         selected = selectedFilter == i,
                         onClick = { selectedFilter = i },
-                        label = { Text(label, fontSize = 11.sp) }
+                        label = { Text(label, fontSize = TextSize.s11) }
                     )
                 }
             }
@@ -92,13 +93,13 @@ fun AuditLogScreen() {
 @Composable
 private fun AuditLogItem(log: AuditLog) {
     val actionColor = when (log.action) {
-        AuditLog.AuditAction.CREATE -> Color(0xFF2E7D32)
-        AuditLog.AuditAction.UPDATE -> Color(0xFFFF8F00)
-        AuditLog.AuditAction.DELETE -> Color(0xFFC62828)
-        AuditLog.AuditAction.LOGIN -> Color(0xFF1565C0)
-        AuditLog.AuditAction.LOGOUT -> Color(0xFF757575)
-        AuditLog.AuditAction.EXPORT -> Color(0xFF6A1B9A)
-        AuditLog.AuditAction.RESTORE -> Color(0xFF00897B)
+        AuditLog.AuditAction.CREATE -> KopkarGreen
+        AuditLog.AuditAction.UPDATE -> KopkarOrange
+        AuditLog.AuditAction.DELETE -> KopkarRed
+        AuditLog.AuditAction.LOGIN -> KopkarBlue
+        AuditLog.AuditAction.LOGOUT -> KopkarGrayDark
+        AuditLog.AuditAction.EXPORT -> KopkarPurple
+        AuditLog.AuditAction.RESTORE -> KopkarTeal
     }
     val actionIcon = when (log.action) {
         AuditLog.AuditAction.CREATE -> Icons.Filled.Add
@@ -121,12 +122,12 @@ private fun AuditLogItem(log: AuditLog) {
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(log.description ?: log.action.label, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                Text("${log.tableName} \u2022 ${log.action.label}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                log.oldValue?.let { Text("Sebelum: $it", fontSize = 10.sp, color = Color.Gray) }
-                log.newValue?.let { Text("Sesudah: $it", fontSize = 10.sp, color = Color.Gray) }
+                Text(log.description ?: log.action.label, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+                Text("${log.tableName} \u2022 ${log.action.label}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                log.oldValue?.let { Text("Sebelum: $it", fontSize = TextSize.s10, color = Color.Gray) }
+                log.newValue?.let { Text("Sesudah: $it", fontSize = TextSize.s10, color = Color.Gray) }
             }
-            Text(formatTimestamp(log.createdAt), fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(formatTimestamp(log.createdAt), fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

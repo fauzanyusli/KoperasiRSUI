@@ -13,5 +13,3 @@ data class Loan(val id: Long = 0, val anggotaId: Long = 0, val namaPeminjam: Str
 data class SavingsHistory(val id: Long, val deskripsi: String, val jenis: String, val jumlah: Double, val tanggal: String, val isIncome: Boolean)
 data class MemberSavings(val noAnggota: String, val nama: String, val jabatan: String, val pokok: Double, val wajib: Double, val sukarela: Double)
 data class CicilanItem(val id: Long, val nama: String, val jenis: String, val jumlahCicilan: Double, val bulanDibayar: Int, val totalBulan: Int, val status: String, val color: androidx.compose.ui.graphics.Color)
-
-fun formatRupiah(amount: Double): String = "Rp ${amount.toLong().toString().reversed().chunked(3).joinToString(".").reversed()}"

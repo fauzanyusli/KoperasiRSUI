@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.transaction
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -73,12 +74,12 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
         Column {
             // Header
             Column(
-                modifier = Modifier.fillMaxWidth().background(Color(0xFFFF8F00).copy(alpha = 0.1f)).padding(16.dp)
+                modifier = Modifier.fillMaxWidth().background(KopkarOrange.copy(alpha = 0.1f)).padding(16.dp)
             ) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Column {
-                        Text("Transaksi & Poin", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFFE65100))
-                        Text("Total Poin: ${viewModel.formatPoin(totalPoin)}", fontSize = 14.sp, color = Color(0xFFE65100).copy(alpha = 0.8f))
+                        Text("Transaksi & Poin", fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = KopkarDeepOrange)
+                        Text("Total Poin: ${viewModel.formatPoin(totalPoin)}", fontSize = TextSize.s14, color = KopkarDeepOrange.copy(alpha = 0.8f))
                     }
                     IconButton(onClick = {
                         if (transactions.isEmpty()) {
@@ -93,7 +94,7 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
                             }
                         }
                     }) {
-                        Icon(Icons.Filled.FileDownload, contentDescription = "Export CSV", tint = Color(0xFFE65100))
+                        Icon(Icons.Filled.FileDownload, contentDescription = "Export CSV", tint = KopkarDeepOrange)
                     }
                 }
             }
@@ -109,7 +110,7 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
                     FilterChip(
                         selected = filterType == type,
                         onClick = { filterType = if (filterType == type) null else type },
-                        label = { Text(type.label, fontSize = 11.sp) }
+                        label = { Text(type.label, fontSize = TextSize.s11) }
                     )
                 }
             }
@@ -139,10 +140,10 @@ fun TransactionScreen(viewModel: TransactionViewModel = viewModel()) {
 private fun TransactionItem(transaction: Transaction, viewModel: TransactionViewModel, onClick: () -> Unit = {}) {
     val isIncome = transaction.jumlah > 0
     val typeColor = when (transaction.tipe) {
-        Transaction.TransactionType.BELANJA -> Color(0xFFFF8F00)
-        Transaction.TransactionType.SETORAN_TABUNGAN -> Color(0xFF2E7D32)
-        Transaction.TransactionType.PENARIKAN_TABUNGAN -> Color(0xFFC62828)
-        Transaction.TransactionType.PEMBAYARAN_ANGSURAN -> Color(0xFF1565C0)
+        Transaction.TransactionType.BELANJA -> KopkarOrange
+        Transaction.TransactionType.SETORAN_TABUNGAN -> KopkarGreen
+        Transaction.TransactionType.PENARIKAN_TABUNGAN -> KopkarRed
+        Transaction.TransactionType.PEMBAYARAN_ANGSURAN -> KopkarBlue
         Transaction.TransactionType.LAINNYA -> MaterialTheme.colorScheme.primary
     }
 
@@ -169,20 +170,20 @@ private fun TransactionItem(transaction: Transaction, viewModel: TransactionView
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(transaction.keterangan ?: transaction.tipe.label, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text(transaction.keterangan ?: transaction.tipe.label, fontSize = TextSize.s14, fontWeight = FontWeight.Medium)
                 val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
-                Text(sdf.format(Date(transaction.tgl)), fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(sdf.format(Date(transaction.tgl)), fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     "${if (isIncome) "+" else "-"}${viewModel.formatRupiah(transaction.jumlah)}",
-                    fontSize = 14.sp, fontWeight = FontWeight.Bold,
-                    color = if (isIncome) Color(0xFF2E7D32) else Color(0xFFC62828)
+                    fontSize = TextSize.s14, fontWeight = FontWeight.Bold,
+                    color = if (isIncome) KopkarGreen else KopkarRed
                 )
                 if (transaction.poinDihasilkan > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.Star, contentDescription = null, tint = Color(0xFFFF8F00), modifier = Modifier.size(12.dp))
-                        Text("+${viewModel.formatPoin(transaction.poinDihasilkan)}", fontSize = 10.sp, color = Color(0xFFFF8F00))
+                        Icon(Icons.Filled.Star, contentDescription = null, tint = KopkarOrange, modifier = Modifier.size(12.dp))
+                        Text("+${viewModel.formatPoin(transaction.poinDihasilkan)}", fontSize = TextSize.s10, color = KopkarOrange)
                     }
                 }
             }

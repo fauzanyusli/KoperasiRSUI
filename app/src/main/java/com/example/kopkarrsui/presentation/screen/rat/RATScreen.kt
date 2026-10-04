@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.rat
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,13 +54,13 @@ fun RATScreen() {
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
-        Column(modifier = Modifier.fillMaxWidth().background(Color(0xFF00897B).copy(alpha = 0.1f)).padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxWidth().background(KopkarTeal.copy(alpha = 0.1f)).padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("RAT 2025", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF00897B))
-                    Text("Rapat Anggota Tahunan", fontSize = 14.sp, color = Color(0xFF00897B).copy(alpha = 0.8f))
+                    Text("RAT 2025", fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = KopkarTeal)
+                    Text("Rapat Anggota Tahunan", fontSize = TextSize.s14, color = KopkarTeal.copy(alpha = 0.8f))
                 }
-                Box(modifier = Modifier.size(56.dp).background(Color(0xFF00897B), CircleShape), contentAlignment = Alignment.Center) {
+                Box(modifier = Modifier.size(56.dp).background(KopkarTeal, CircleShape), contentAlignment = Alignment.Center) {
                     Icon(Icons.Filled.HowToVote, contentDescription = null, tint = Color.White)
                 }
             }
@@ -73,7 +74,7 @@ fun RATScreen() {
                 Tab(
                     selected = selectedTab == i,
                     onClick = { selectedTab = i },
-                    text = { Text(t, fontSize = 12.sp) }
+                    text = { Text(t, fontSize = TextSize.s12) }
                 )
             }
         }
@@ -99,10 +100,10 @@ private fun BeritaAcaraTab() {
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
-            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFF00897B)), shape = RoundedCornerShape(12.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = KopkarTeal), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Berita Acara RAT 2025", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("20 Januari 2025 \u2022 Aula RS UI", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Berita Acara RAT 2025", fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("20 Januari 2025 \u2022 Aula RS UI", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                 }
             }
         }
@@ -110,10 +111,10 @@ private fun BeritaAcaraTab() {
         item {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Ringkasan", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text("Ringkasan", fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Hadir", fontSize = 12.sp); Text("42 dari 47 anggota", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Quorum", fontSize = 12.sp); Text("Tercapai (89%)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32)) }
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Hadir", fontSize = TextSize.s12); Text("42 dari 47 anggota", fontSize = TextSize.s12, fontWeight = FontWeight.Bold) }
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Quorum", fontSize = TextSize.s12); Text("Tercapai (89%)", fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarGreen) }
                 }
             }
         }
@@ -121,15 +122,15 @@ private fun BeritaAcaraTab() {
         items(agenda) { item ->
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(32.dp).background(if (item.selesai) Color(0xFF2E7D32) else Color.Gray.copy(alpha = 0.3f), CircleShape), contentAlignment = Alignment.Center) {
-                        Text(item.no, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = if (item.selesai) Color.White else Color.Gray)
+                    Box(modifier = Modifier.size(32.dp).background(if (item.selesai) KopkarGreen else Color.Gray.copy(alpha = 0.3f), CircleShape), contentAlignment = Alignment.Center) {
+                        Text(item.no, fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = if (item.selesai) Color.White else Color.Gray)
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(item.judul, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                        Text("${item.pemateri} \u2022 ${item.waktu}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(item.judul, fontSize = TextSize.s14, fontWeight = FontWeight.Medium)
+                        Text("${item.pemateri} \u2022 ${item.waktu}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    if (item.selesai) Icon(Icons.Filled.Check, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(20.dp))
+                    if (item.selesai) Icon(Icons.Filled.Check, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(20.dp))
                 }
             }
         }
@@ -149,23 +150,23 @@ private fun VotingTab() {
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.Poll, contentDescription = null, tint = Color(0xFF00897B))
+                        Icon(Icons.Filled.Poll, contentDescription = null, tint = KopkarTeal)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(v.judul, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text(v.judul, fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     val total = v.options.sumOf { it.second }
                     v.options.forEach { (label, votes) ->
                         val pct = if (total > 0) votes.toFloat() / total else 0f
                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(label, fontSize = 12.sp, modifier = Modifier.width(100.dp))
-                            LinearProgressIndicator(progress = { pct }, modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)), color = Color(0xFF00897B), trackColor = Color(0xFF00897B).copy(alpha = 0.15f))
+                            Text(label, fontSize = TextSize.s12, modifier = Modifier.width(100.dp))
+                            LinearProgressIndicator(progress = { pct }, modifier = Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)), color = KopkarTeal, trackColor = KopkarTeal.copy(alpha = 0.15f))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("$votes", fontSize = 12.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(30.dp))
+                            Text("$votes", fontSize = TextSize.s12, fontWeight = FontWeight.Bold, modifier = Modifier.width(30.dp))
                         }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Total suara: $total", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Total suara: $total", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -183,10 +184,10 @@ private fun RekomendasiTab() {
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
-            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFF00897B)), shape = RoundedCornerShape(12.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = KopkarTeal), shape = RoundedCornerShape(12.dp)) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Rekomendasi RAT 2025", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Text("Keputusan dan rekomendasi dari rapat", fontSize = 12.sp, color = Color.White.copy(alpha = 0.7f))
+                    Text("Rekomendasi RAT 2025", fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text("Keputusan dan rekomendasi dari rapat", fontSize = TextSize.s12, color = Color.White.copy(alpha = 0.7f))
                 }
             }
         }
@@ -194,9 +195,9 @@ private fun RekomendasiTab() {
         items(items) { item ->
             Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                 Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.Top) {
-                    Icon(Icons.Filled.Check, contentDescription = null, tint = Color(0xFF00897B), modifier = Modifier.size(20.dp))
+                    Icon(Icons.Filled.Check, contentDescription = null, tint = KopkarTeal, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Text(item, fontSize = 13.sp)
+                    Text(item, fontSize = TextSize.s13)
                 }
             }
         }

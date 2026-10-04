@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.component
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -71,8 +72,8 @@ fun StatCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(text = title, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Medium)
-                    Text(text = value, fontSize = 24.sp, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
+                    Text(text = title, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.Medium)
+                    Text(text = value, fontSize = TextSize.s24, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                     trend?.let {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
@@ -81,7 +82,7 @@ fun StatCard(
                                 tint = if (trendPositive) Color.Green else Color.Red,
                                 modifier = Modifier.size(14.dp)
                             )
-                            Text(text = it, fontSize = 10.sp, color = if (trendPositive) Color.Green else Color.Red, fontWeight = FontWeight.Medium)
+                            Text(text = it, fontSize = TextSize.s10, color = if (trendPositive) Color.Green else Color.Red, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
@@ -133,8 +134,8 @@ fun InfoCard(
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
-                subtitle?.let { Text(text = it, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                Text(text = title, fontSize = TextSize.s14, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+                subtitle?.let { Text(text = it, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
         }
     }
@@ -165,9 +166,9 @@ fun EmptyState(
             Icon(imageVector = icon, contentDescription = "", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.align(Alignment.Center))
         }
         Spacer(modifier = Modifier.padding(top = 16.dp))
-        Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.Center)
+        Text(text = title, fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        Text(text = message, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        Text(text = message, fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         actionLabel?.let { label ->
             Spacer(modifier = Modifier.padding(top = 24.dp))
             Button(
@@ -200,7 +201,7 @@ fun LoadingOverlay(message: String = "Memuat...", modifier: Modifier = Modifier)
                 modifier = Modifier.size(48.dp)
             )
             Spacer(modifier = Modifier.padding(top = 16.dp))
-            Text(text = message, fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Medium)
+            Text(text = message, fontSize = TextSize.s16, color = Color.White, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -227,9 +228,9 @@ fun ErrorState(
             Icon(imageVector = Icons.Filled.Error, contentDescription = "", tint = Color.Red, modifier = Modifier.align(Alignment.Center))
         }
         Spacer(modifier = Modifier.padding(top = 16.dp))
-        Text(text = "Terjadi Kesalahan", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.Center)
+        Text(text = "Terjadi Kesalahan", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        Text(text = message, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+        Text(text = message, fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.padding(top = 24.dp))
         Button(
             onClick = onRetry,

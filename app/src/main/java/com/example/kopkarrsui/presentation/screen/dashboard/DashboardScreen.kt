@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.dashboard
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,18 +20,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.ReceiptLong
-import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.Card
@@ -65,6 +60,7 @@ import com.example.kopkarrsui.presentation.component.ErrorState
 import com.example.kopkarrsui.presentation.component.LoadingOverlay
 import com.example.kopkarrsui.presentation.component.StatCard
 import com.example.kopkarrsui.presentation.viewmodel.DashboardViewModel
+import com.example.kopkarrsui.util.formatRupiahShort
 
 // ─── Data class untuk anggota ───
 data class MemberUI(
@@ -91,7 +87,6 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
     val error by viewModel.error.collectAsStateWithLifecycle()
 
     var searchQuery by remember { mutableStateOf("") }
-    var showMemberList by remember { mutableStateOf(true) }
 
     // Sample data anggota - remember agar tidak recreate setiap recomposition
     val sampleMembers = remember {
@@ -128,9 +123,9 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("Selamat datang,", fontSize = 12.sp, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
-                            Text(member?.nama?.split(" ")?.firstOrNull() ?: "Anggota", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                            Text("No. ${member?.noAnggota ?: "-"}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f))
+                            Text("Selamat datang,", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
+                            Text(member?.nama?.split(" ")?.firstOrNull() ?: "Anggota", fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                            Text("No. ${member?.noAnggota ?: "-"}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f))
                         }
                         Box(
                             modifier = Modifier.size(56.dp).background(MaterialTheme.colorScheme.primary, CircleShape),
@@ -154,24 +149,12 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
                 item {
                     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            StatCard(title = "Total Tabungan", value = viewModel.formatRupiah(totalSaldo), icon = Icons.Filled.AccountBalanceWallet, iconColor = Color(0xFF2E7D32), modifier = Modifier.weight(1f))
-                            StatCard(title = "Total Poin", value = viewModel.formatPoin(totalPoin), icon = Icons.Filled.TrendingUp, iconColor = Color(0xFFFF8F00), modifier = Modifier.weight(1f))
+                            StatCard(title = "Total Tabungan", value = viewModel.formatRupiah(totalSaldo), icon = Icons.Filled.AccountBalanceWallet, iconColor = KopkarGreen, modifier = Modifier.weight(1f))
+                            StatCard(title = "Total Poin", value = viewModel.formatPoin(totalPoin), icon = Icons.Filled.TrendingUp, iconColor = KopkarOrange, modifier = Modifier.weight(1f))
                         }
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            StatCard(title = "SHU Tahun Ini", value = latestSHU?.let { viewModel.formatRupiah(it.jumlah) } ?: "Belum dihitung", icon = Icons.Filled.Assessment, iconColor = Color(0xFF1565C0), modifier = Modifier.weight(1f))
-                            StatCard(title = "Anggota Aktif", value = "${sampleMembers.count { it.status == Member.MemberStatus.AKTIF }}", icon = Icons.Filled.People, iconColor = Color(0xFF6A1B9A), modifier = Modifier.weight(1f))
-                        }
-                    }
-                }
-
-                // Quick Actions
-                item {
-                    Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Aksi Cepat", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            QuickAction("Setor Tabungan", Icons.Filled.AddCircle, Color(0xFF2E7D32), Modifier.weight(1f))
-                            QuickAction("Tarik Tabungan", Icons.Filled.RemoveCircle, Color(0xFFC62828), Modifier.weight(1f))
-                            QuickAction("Mutasi", Icons.Filled.Assessment, MaterialTheme.colorScheme.primary, Modifier.weight(1f))
+                            StatCard(title = "SHU Tahun Ini", value = latestSHU?.let { viewModel.formatRupiah(it.jumlah) } ?: "Belum dihitung", icon = Icons.Filled.Assessment, iconColor = KopkarBlue, modifier = Modifier.weight(1f))
+                            StatCard(title = "Anggota Aktif", value = "${sampleMembers.count { it.status == Member.MemberStatus.AKTIF }}", icon = Icons.Filled.People, iconColor = KopkarPurple, modifier = Modifier.weight(1f))
                         }
                     }
                 }
@@ -180,14 +163,14 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Transaksi Terbaru", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text("Transaksi Terbaru", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
                         if (recentTransactions.isEmpty()) {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
                             ) {
                                 Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                                    Text("Belum ada transaksi", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    Text("Belum ada transaksi", fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -221,9 +204,9 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Manajemen Anggota", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text("Manajemen Anggota", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
                             }
-                            Text("${sampleMembers.size} orang", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("${sampleMembers.size} orang", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -271,7 +254,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
                         ) {
                             Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                                Text("Tidak ada anggota ditemukan", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Tidak ada anggota ditemukan", fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
@@ -295,9 +278,9 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel(), onNavigateToMem
 @Composable
 private fun MemberCard(member: MemberUI) {
     val statusColor = when (member.status) {
-        Member.MemberStatus.AKTIF -> Color(0xFF2E7D32)
-        Member.MemberStatus.NONAKTIF -> Color(0xFFC62828)
-        Member.MemberStatus.KELUAR -> Color(0xFF9E9E9E)
+        Member.MemberStatus.AKTIF -> KopkarGreen
+        Member.MemberStatus.NONAKTIF -> KopkarRed
+        Member.MemberStatus.KELUAR -> KopkarGray
     }
 
     Card(
@@ -322,7 +305,7 @@ private fun MemberCard(member: MemberUI) {
                 ) {
                     Text(
                         member.nama.take(2).uppercase(),
-                        fontSize = 16.sp,
+                        fontSize = TextSize.s16,
                         fontWeight = FontWeight.Bold,
                         color = statusColor
                     )
@@ -332,8 +315,8 @@ private fun MemberCard(member: MemberUI) {
 
                 // Name + Info
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(member.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("${member.noAnggota} • ${member.jabatan}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(member.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text("${member.noAnggota} • ${member.jabatan}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
@@ -341,17 +324,7 @@ private fun MemberCard(member: MemberUI) {
                                 .background(statusColor, CircleShape)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = 10.sp, color = statusColor)
-                    }
-                }
-
-                // Actions
-                Row {
-                    IconButton(onClick = { }, modifier = Modifier.size(32.dp)) {
-                        Icon(Icons.Filled.Phone, contentDescription = "Telepon", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                    }
-                    IconButton(onClick = { }, modifier = Modifier.size(32.dp)) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
+                        Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = TextSize.s10, color = statusColor)
                     }
                 }
             }
@@ -366,34 +339,18 @@ private fun MemberCard(member: MemberUI) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Tabungan", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(formatRupiahShort(member.totalTabungan), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                    Text("Tabungan", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(formatRupiahShort(member.totalTabungan), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarGreen)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Pinjaman", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(formatRupiahShort(member.totalPinjaman), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFFC62828))
+                    Text("Pinjaman", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(formatRupiahShort(member.totalPinjaman), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = KopkarRed)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Gabung", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(member.tanggalGabung.take(7), fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                    Text("Gabung", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(member.tanggalGabung.take(7), fontSize = TextSize.s12, fontWeight = FontWeight.Medium)
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun QuickAction(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, color: Color, modifier: Modifier = Modifier) {
-    OutlinedButton(
-        onClick = {},
-        modifier = modifier.height(80.dp),
-        colors = ButtonDefaults.outlinedButtonColors(containerColor = color.copy(alpha = 0.05f), contentColor = color),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(icon, contentDescription = "", tint = color, modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(label, fontSize = 10.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center)
         }
     }
 }
@@ -409,7 +366,7 @@ private fun TransactionItem(transaction: Transaction, viewModel: DashboardViewMo
     ) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier.size(40.dp).background(if (isIncome) Color(0xFF2E7D32).copy(alpha = 0.12f) else Color(0xFFC62828).copy(alpha = 0.12f), CircleShape),
+                modifier = Modifier.size(40.dp).background(if (isIncome) KopkarGreen.copy(alpha = 0.12f) else KopkarRed.copy(alpha = 0.12f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -420,30 +377,21 @@ private fun TransactionItem(transaction: Transaction, viewModel: DashboardViewMo
                         else -> Icons.Filled.ReceiptLong
                     },
                     contentDescription = "",
-                    tint = if (isIncome) Color(0xFF2E7D32) else Color(0xFFC62828),
+                    tint = if (isIncome) KopkarGreen else KopkarRed,
                     modifier = Modifier.size(20.dp)
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(transaction.keterangan ?: transaction.tipe.label, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                Text(transaction.tipe.label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(transaction.keterangan ?: transaction.tipe.label, fontSize = TextSize.s14, fontWeight = FontWeight.Medium)
+                Text(transaction.tipe.label, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(
                 "${if (isIncome) "+" else "-"}${viewModel.formatRupiah(transaction.jumlah)}",
-                fontSize = 14.sp,
+                fontSize = TextSize.s14,
                 fontWeight = FontWeight.Bold,
-                color = if (isIncome) Color(0xFF2E7D32) else Color(0xFFC62828)
+                color = if (isIncome) KopkarGreen else KopkarRed
             )
         }
-    }
-}
-
-// Helper function
-private fun formatRupiahShort(amount: Double): String {
-    return when {
-        amount >= 1_000_000 -> "Rp ${(amount / 1_000_000).toString().take(4)}jt"
-        amount >= 1_000 -> "Rp ${(amount / 1_000).toString().take(4)}rb"
-        else -> "Rp ${amount.toLong()}"
     }
 }

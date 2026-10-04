@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.admin
+import com.example.kopkarrsui.ui.theme.*
 
 import android.content.Context
 import android.widget.Toast
@@ -93,16 +94,16 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2E7D32).copy(alpha = 0.08f)),
+                    colors = CardDefaults.cardColors(containerColor = KopkarGreen.copy(alpha = 0.08f)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Filled.Backup, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(28.dp))
+                            Icon(Icons.Filled.Backup, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(28.dp))
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text("Backup Database", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text("Cadangkan database ke file", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("Backup Database", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
+                                Text("Cadangkan database ke file", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
@@ -138,7 +139,7 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
                         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text(msg, fontSize = 13.sp, modifier = Modifier.weight(1f))
+                            Text(msg, fontSize = TextSize.s13, modifier = Modifier.weight(1f))
                             IconButton(onClick = { lastMessage = null }, modifier = Modifier.size(20.dp)) {
                                 Icon(Icons.Filled.Close, contentDescription = "Tutup", modifier = Modifier.size(14.dp))
                             }
@@ -149,7 +150,7 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
 
             // Backup list header
             item {
-                Text("Daftar Backup", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Daftar Backup", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
             }
 
             if (backupList.isEmpty()) {
@@ -160,7 +161,7 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                            Text("Belum ada backup", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Belum ada backup", fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -187,7 +188,7 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
     showDeleteDialog?.let { file ->
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
-            icon = { Icon(Icons.Filled.Delete, contentDescription = null, tint = Color(0xFFC62828), modifier = Modifier.size(32.dp)) },
+            icon = { Icon(Icons.Filled.Delete, contentDescription = null, tint = KopkarRed, modifier = Modifier.size(32.dp)) },
             title = { Text("Hapus Backup?") },
             text = { Text("File ${file.name} akan dihapus permanen.") },
             confirmButton = {
@@ -197,7 +198,7 @@ fun BackupRestoreScreen(onBack: () -> Unit) {
                     showDeleteDialog = null
                     lastMessage = "Backup ${file.name} dihapus"
                 }) {
-                    Text("Hapus", color = Color(0xFFC62828))
+                    Text("Hapus", color = KopkarRed)
                 }
             },
             dismissButton = {
@@ -222,8 +223,8 @@ private fun BackupItem(file: File, onRestore: () -> Unit, onDelete: () -> Unit) 
         Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(file.name, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                    Text("${sdf.format(Date(file.lastModified()))} • ${sizeKb}KB", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(file.name, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+                    Text("${sdf.format(Date(file.lastModified()))} • ${sizeKb}KB", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -231,12 +232,12 @@ private fun BackupItem(file: File, onRestore: () -> Unit, onDelete: () -> Unit) 
                 OutlinedButton(onClick = onRestore, modifier = Modifier.weight(1f), shape = RoundedCornerShape(8.dp)) {
                     Icon(Icons.Filled.Restore, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Restore", fontSize = 12.sp)
+                    Text("Restore", fontSize = TextSize.s12)
                 }
                 OutlinedButton(onClick = onDelete, modifier = Modifier.weight(1f), shape = RoundedCornerShape(8.dp)) {
-                    Icon(Icons.Filled.Delete, contentDescription = null, modifier = Modifier.size(16.dp), tint = Color(0xFFC62828))
+                    Icon(Icons.Filled.Delete, contentDescription = null, modifier = Modifier.size(16.dp), tint = KopkarRed)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Hapus", fontSize = 12.sp, color = Color(0xFFC62828))
+                    Text("Hapus", fontSize = TextSize.s12, color = KopkarRed)
                 }
             }
         }

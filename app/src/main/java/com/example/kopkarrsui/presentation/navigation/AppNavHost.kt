@@ -26,8 +26,10 @@ fun AppNavHost(
 ) {
     NavHost(navController, startDestination, modifier) {
         composable(AppDestination.AuthLogin.route) {
-            LoginScreen(onLoginSuccess = {
-                navController.navigate(AppDestination.Dashboard.route) {
+            LoginScreen(onLoginSuccess = { isAdmin ->
+                navController.navigate(
+                    if (isAdmin) AppDestination.AdminDashboard.route else AppDestination.Dashboard.route
+                ) {
                     popUpTo(AppDestination.AuthLogin.route) { inclusive = true }
                 }
             })
@@ -63,7 +65,12 @@ fun AppNavHost(
         composable(AppDestination.AdminDashboard.route) {
             AdminDashboardScreen(
                 onNavigateToAuditLog = { navController.navigate(AppDestination.AuditLog.route) },
-                onNavigateToBackup = { navController.navigate(AppDestination.BackupRestore.route) }
+                onNavigateToBackup = { navController.navigate(AppDestination.BackupRestore.route) },
+                onLogout = {
+                    navController.navigate(AppDestination.AuthLogin.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
         composable(AppDestination.AuditLog.route) {

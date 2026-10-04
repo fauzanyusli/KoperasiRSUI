@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.shu
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +44,7 @@ fun SHUScreen(viewModel: SHUViewModel) {
                         Text(
                             t,
                             fontWeight = if (selectedTab == i) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = 11.sp
+                            fontSize = TextSize.s11
                         )
                     }
                 )

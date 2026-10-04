@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.savings
+import com.example.kopkarrsui.ui.theme.*
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -57,8 +58,8 @@ fun SavingsScreen(viewModel: SavingsViewModel = viewModel()) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Tabungan & Pinjaman", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                Text("Total Saldo: Rp ${viewModel.formatRupiah(totalSaldo)}", fontSize = 13.sp, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
+                Text("Tabungan & Pinjaman", fontSize = TextSize.s18, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text("Total Saldo: Rp ${viewModel.formatRupiah(totalSaldo)}", fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
             }
             IconButton(onClick = {
                 if (accounts.isEmpty()) {
@@ -104,7 +105,7 @@ fun SavingsScreen(viewModel: SavingsViewModel = viewModel()) {
                         Text(
                             t,
                             fontWeight = if (selectedTab == i) FontWeight.Bold else FontWeight.Normal,
-                            fontSize = 13.sp
+                            fontSize = TextSize.s13
                         )
                     }
                 )
@@ -136,7 +137,7 @@ private fun SavingsTab(viewModel: SavingsViewModel) {
             }
         ) {
             subs.forEachIndexed { i, t ->
-                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(t, fontSize = 11.sp) })
+                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(t, fontSize = TextSize.s11) })
             }
         }
 
@@ -168,7 +169,7 @@ private fun LoanTab() {
             }
         ) {
             subs.forEachIndexed { i, t ->
-                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(t, fontSize = 11.sp) })
+                Tab(selected = sub == i, onClick = { sub = i }, text = { Text(t, fontSize = TextSize.s11) })
             }
         }
 

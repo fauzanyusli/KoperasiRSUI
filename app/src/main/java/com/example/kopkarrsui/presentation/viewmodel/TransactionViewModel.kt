@@ -70,6 +70,6 @@ class TransactionViewModel @Inject constructor(
         loadTransactions(memberId, refresh = false)
     }
 
-    fun formatRupiah(amount: Long): String = "Rp ${NumberFormat.getInstance(Locale("id", "ID")).format(amount)}"
+    fun formatRupiah(amount: Long): String = com.example.kopkarrsui.util.formatRupiah(amount)
     fun formatPoin(poin: Int): String = NumberFormat.getInstance(Locale("id", "ID")).format(poin)
 }

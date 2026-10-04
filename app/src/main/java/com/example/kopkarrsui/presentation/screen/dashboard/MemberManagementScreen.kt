@@ -1,4 +1,5 @@
 package com.example.kopkarrsui.presentation.screen.dashboard
+import com.example.kopkarrsui.ui.theme.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -64,6 +65,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kopkarrsui.data.local.entity.Member
+import com.example.kopkarrsui.util.formatRupiah
 
 data class MenuItem(val id: Int, val title: String, val subtitle: String, val icon: ImageVector, val color: Color)
 
@@ -118,19 +120,19 @@ fun MemberManagementScreen(onBack: () -> Unit) {
 @Composable
 private fun MemberManagementHome(onNavigate: (Int) -> Unit) {
     val menuItems = listOf(
-        MenuItem(1, "Pendaftaran Anggota Baru", "Daftarkan anggota baru ke koperasi", Icons.Filled.PersonAdd, Color(0xFF2E7D32)),
-        MenuItem(2, "Profil Anggota Lengkap", "Lihat dan edit data profil anggota", Icons.Filled.Person, Color(0xFF1565C0)),
-        MenuItem(3, "Kartu Anggota Digital", "Kartu identitas digital anggota", Icons.Filled.CardMembership, Color(0xFF6A1B9A)),
-        MenuItem(4, "Status Keanggotaan", "Cek dan kelola status keanggotaan", Icons.Filled.Assignment, Color(0xFFE65100)),
-        MenuItem(5, "Data Suplier", "Kelola daftar suplier koperasi", Icons.Filled.Store, Color(0xFF00695C))
+        MenuItem(1, "Pendaftaran Anggota Baru", "Daftarkan anggota baru ke koperasi", Icons.Filled.PersonAdd, KopkarGreen),
+        MenuItem(2, "Profil Anggota Lengkap", "Lihat dan edit data profil anggota", Icons.Filled.Person, KopkarBlue),
+        MenuItem(3, "Kartu Anggota Digital", "Kartu identitas digital anggota", Icons.Filled.CardMembership, KopkarPurple),
+        MenuItem(4, "Status Keanggotaan", "Cek dan kelola status keanggotaan", Icons.Filled.Assignment, KopkarDeepOrange),
+        MenuItem(5, "Data Suplier", "Kelola daftar suplier koperasi", Icons.Filled.Store, KopkarTealDark)
     )
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item { Text("Pilih Fitur", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+        item { Text("Pilih Fitur", fontSize = TextSize.s16, fontWeight = FontWeight.Bold) }
         items(menuItems) { item -> MenuCard(item = item, onClick = { onNavigate(item.id) }) }
-        item { Spacer(modifier = Modifier.height(8.dp)); Text("Statistik Anggota", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
-        item { Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { MiniStat("Total Anggota", "25", Color(0xFF1565C0), Modifier.weight(1f)); MiniStat("Aktif", "22", Color(0xFF2E7D32), Modifier.weight(1f)) } }
-        item { Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { MiniStat("Nonaktif", "2", Color(0xFFC62828), Modifier.weight(1f)); MiniStat("Keluar", "1", Color(0xFF9E9E9E), Modifier.weight(1f)) } }
+        item { Spacer(modifier = Modifier.height(8.dp)); Text("Statistik Anggota", fontSize = TextSize.s16, fontWeight = FontWeight.Bold) }
+        item { Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { MiniStat("Total Anggota", "25", KopkarBlue, Modifier.weight(1f)); MiniStat("Aktif", "22", KopkarGreen, Modifier.weight(1f)) } }
+        item { Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { MiniStat("Nonaktif", "2", KopkarRed, Modifier.weight(1f)); MiniStat("Keluar", "1", KopkarGray, Modifier.weight(1f)) } }
     }
 }
 
@@ -143,8 +145,8 @@ private fun MenuCard(item: MenuItem, onClick: () -> Unit) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(item.title, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                Text(item.subtitle, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(item.title, fontSize = TextSize.s15, fontWeight = FontWeight.Bold)
+                Text(item.subtitle, fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -154,8 +156,8 @@ private fun MenuCard(item: MenuItem, onClick: () -> Unit) {
 private fun MiniStat(label: String, value: String, color: Color, modifier: Modifier = Modifier) {
     Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(value, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = color)
-            Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, fontSize = TextSize.s24, fontWeight = FontWeight.Bold, color = color)
+            Text(label, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -178,11 +180,11 @@ private fun RegistrationSection() {
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
-            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFF2E7D32).copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = KopkarGreen.copy(alpha = 0.08f)), shape = RoundedCornerShape(12.dp)) {
                 Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.PersonAdd, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(32.dp))
+                    Icon(Icons.Filled.PersonAdd, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(32.dp))
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column { Text("Formulir Pendaftaran", fontSize = 16.sp, fontWeight = FontWeight.Bold); Text("Isi data diri anggota baru", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    Column { Text("Formulir Pendaftaran", fontSize = TextSize.s16, fontWeight = FontWeight.Bold); Text("Isi data diri anggota baru", fontSize = TextSize.s12, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 }
             }
         }
@@ -193,10 +195,10 @@ private fun RegistrationSection() {
         item { FormField("Email", email, { email = it }, "opsional") }
         item { FormField("Alamat", alamat, { alamat = it }, "Alamat lengkap") }
         item {
-            Text("Jabatan", fontSize = 13.sp, fontWeight = FontWeight.Medium)
+            Text("Jabatan", fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf("Anggota", "Ketua", "Sekretaris", "Bendahara").forEach { j ->
-                    FilterChip(selected = jabatan == j, onClick = { jabatan = j }, label = { Text(j, fontSize = 12.sp) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
+                    FilterChip(selected = jabatan == j, onClick = { jabatan = j }, label = { Text(j, fontSize = TextSize.s12) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer))
                 }
             }
         }
@@ -204,7 +206,7 @@ private fun RegistrationSection() {
         item { FormField("PIN Transaksi", "", { }, "6 digit angka", isPassword = true) }
         item {
             Spacer(modifier = Modifier.height(8.dp))
-            OutlinedButton(onClick = { showConfirmDialog = true }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFF2E7D32), contentColor = Color.White), shape = RoundedCornerShape(12.dp)) {
+            OutlinedButton(onClick = { showConfirmDialog = true }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.outlinedButtonColors(containerColor = KopkarGreen, contentColor = Color.White), shape = RoundedCornerShape(12.dp)) {
                 Icon(Icons.Filled.CheckCircle, contentDescription = null); Spacer(modifier = Modifier.width(8.dp)); Text("Daftarkan Anggota", fontWeight = FontWeight.Bold)
             }
         }
@@ -214,12 +216,12 @@ private fun RegistrationSection() {
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
-            icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(32.dp)) },
+            icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(32.dp)) },
             title = { Text("Konfirmasi Pendaftaran") },
             text = { Text("Pastikan data yang diisi sudah benar. Anggota baru akan didaftarkan ke koperasi.") },
             confirmButton = {
                 TextButton(onClick = { showConfirmDialog = false; showSuccess = true }) {
-                    Text("Ya, Daftarkan", color = Color(0xFF2E7D32))
+                    Text("Ya, Daftarkan", color = KopkarGreen)
                 }
             },
             dismissButton = {
@@ -229,15 +231,15 @@ private fun RegistrationSection() {
     }
 
     if (showSuccess) {
-        AlertDialog(onDismissRequest = { showSuccess = false }, icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = Color(0xFF2E7D32), modifier = Modifier.size(48.dp)) }, title = { Text("Pendaftaran Berhasil!", textAlign = TextAlign.Center) }, text = { Text("Anggota baru berhasil didaftarkan.", textAlign = TextAlign.Center) }, confirmButton = { TextButton(onClick = { showSuccess = false }) { Text("OK") } })
+        AlertDialog(onDismissRequest = { showSuccess = false }, icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = KopkarGreen, modifier = Modifier.size(48.dp)) }, title = { Text("Pendaftaran Berhasil!", textAlign = TextAlign.Center) }, text = { Text("Anggota baru berhasil didaftarkan.", textAlign = TextAlign.Center) }, confirmButton = { TextButton(onClick = { showSuccess = false }) { Text("OK") } })
     }
 }
 
 @Composable
 private fun FormField(label: String, value: String, onValueChange: (String) -> Unit, placeholder: String, enabled: Boolean = true, isPassword: Boolean = false) {
     Column {
-        Text(label, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-        OutlinedTextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(), placeholder = { Text(placeholder, fontSize = 13.sp) }, singleLine = true, enabled = enabled, shape = RoundedCornerShape(12.dp), colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow))
+        Text(label, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
+        OutlinedTextField(value = value, onValueChange = onValueChange, modifier = Modifier.fillMaxWidth(), placeholder = { Text(placeholder, fontSize = TextSize.s13) }, singleLine = true, enabled = enabled, shape = RoundedCornerShape(12.dp), colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow))
     }
 }
 
@@ -270,9 +272,9 @@ private fun ProfileSection() {
                 items(filtered, key = { it.id }) { member ->
                     Card(onClick = { selectedMember = member }, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(44.dp).background(Color(0xFF1565C0).copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1565C0)) }
+                            Box(modifier = Modifier.size(44.dp).background(KopkarBlue.copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = KopkarBlue) }
                             Spacer(modifier = Modifier.width(12.dp))
-                            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("${member.noAnggota} • ${member.jabatan}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text("${member.noAnggota} • ${member.jabatan}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                             Icon(Icons.Filled.Visibility, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                         }
                     }
@@ -284,21 +286,21 @@ private fun ProfileSection() {
 
 @Composable
 private fun MemberProfileDetail(member: MemberUI, onBack: () -> Unit) {
-    val statusColor = when (member.status) { Member.MemberStatus.AKTIF -> Color(0xFF2E7D32); Member.MemberStatus.NONAKTIF -> Color(0xFFC62828); Member.MemberStatus.KELUAR -> Color(0xFF9E9E9E) }
+    val statusColor = when (member.status) { Member.MemberStatus.AKTIF -> KopkarGreen; Member.MemberStatus.NONAKTIF -> KopkarRed; Member.MemberStatus.KELUAR -> KopkarGray }
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(modifier = Modifier.size(80.dp).background(statusColor.copy(alpha = 0.15f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = 28.sp, fontWeight = FontWeight.Bold, color = statusColor) }
+                Box(modifier = Modifier.size(80.dp).background(statusColor.copy(alpha = 0.15f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = TextSize.s28, fontWeight = FontWeight.Bold, color = statusColor) }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(member.nama, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(member.noAnggota, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(member.nama, fontSize = TextSize.s20, fontWeight = FontWeight.Bold)
+                Text(member.noAnggota, fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) { Box(modifier = Modifier.size(10.dp).background(statusColor, CircleShape)); Spacer(modifier = Modifier.width(6.dp)); Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = 13.sp, color = statusColor, fontWeight = FontWeight.Medium) }
+                Row(verticalAlignment = Alignment.CenterVertically) { Box(modifier = Modifier.size(10.dp).background(statusColor, CircleShape)); Spacer(modifier = Modifier.width(6.dp)); Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = TextSize.s13, color = statusColor, fontWeight = FontWeight.Medium) }
             }
         }
         item { SectionTitle("Data Diri"); ProfileInfoRow("No. Anggota", member.noAnggota); ProfileInfoRow("Jabatan", member.jabatan); ProfileInfoRow("No. Handphone", member.noTelp); ProfileInfoRow("Tanggal Gabung", member.tanggalGabung) }
-        item { SectionTitle("Data Keuangan"); Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { FinancialCard("Total Tabungan", member.totalTabungan, Color(0xFF2E7D32), Modifier.weight(1f)); FinancialCard("Total Pinjaman", member.totalPinjaman, Color(0xFFC62828), Modifier.weight(1f)) } }
-        item { SectionTitle("Aksi"); Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Edit, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Edit", fontSize = 12.sp) }; OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Phone, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Hubungi", fontSize = 12.sp) }; OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Description, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Riwayat", fontSize = 12.sp) } } }
+        item { SectionTitle("Data Keuangan"); Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) { FinancialCard("Total Tabungan", member.totalTabungan, KopkarGreen, Modifier.weight(1f)); FinancialCard("Total Pinjaman", member.totalPinjaman, KopkarRed, Modifier.weight(1f)) } }
+        item { SectionTitle("Aksi"); Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) { OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Edit, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Edit", fontSize = TextSize.s12) }; OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Phone, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Hubungi", fontSize = TextSize.s12) }; OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Icon(Icons.Filled.Description, contentDescription = null, modifier = Modifier.size(16.dp)); Spacer(modifier = Modifier.width(4.dp)); Text("Riwayat", fontSize = TextSize.s12) } } }
     }
 }
 
@@ -320,16 +322,16 @@ private fun DigitalCardSection() {
         MemberDigitalCard(member = selectedMember!!, onBack = { selectedMember = null })
     } else {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            Text("Pilih Anggota", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text("Pilih Anggota", fontSize = TextSize.s16, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(12.dp))
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(sampleMembers) { member ->
                     Card(onClick = { selectedMember = member }, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
                         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(44.dp).background(Color(0xFF6A1B9A).copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF6A1B9A)) }
+                            Box(modifier = Modifier.size(44.dp).background(KopkarPurple.copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = KopkarPurple) }
                             Spacer(modifier = Modifier.width(12.dp))
-                            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold); Text(member.noAnggota, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                            Icon(Icons.Filled.CardMembership, contentDescription = null, tint = Color(0xFF6A1B9A), modifier = Modifier.size(20.dp))
+                            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text(member.noAnggota, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                            Icon(Icons.Filled.CardMembership, contentDescription = null, tint = KopkarPurple, modifier = Modifier.size(20.dp))
                         }
                     }
                 }
@@ -342,28 +344,28 @@ private fun DigitalCardSection() {
 private fun MemberDigitalCard(member: MemberUI, onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         // Kartu
-        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF1565C0))) {
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = KopkarBlue)) {
             Column(modifier = Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("KOPERASI KARYAWAN RSUI", fontSize = 11.sp, color = Color.White.copy(alpha = 0.8f)); Text("KARTU ANGGOTA", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                    Column { Text("KOPERASI KARYAWAN RSUI", fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.8f)); Text("KARTU ANGGOTA", fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = Color.White) }
                     Icon(Icons.Filled.QrCode, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                 }
                 HorizontalDivider(color = Color.White.copy(alpha = 0.3f))
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(56.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White) }
+                    Box(modifier = Modifier.size(56.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = Color.White) }
                     Spacer(modifier = Modifier.width(16.dp))
-                    Column { Text(member.nama, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White); Text(member.noAnggota, fontSize = 13.sp, color = Color.White.copy(alpha = 0.8f)); Text(member.jabatan, fontSize = 11.sp, color = Color.White.copy(alpha = 0.7f)) }
+                    Column { Text(member.nama, fontSize = TextSize.s16, fontWeight = FontWeight.Bold, color = Color.White); Text(member.noAnggota, fontSize = TextSize.s13, color = Color.White.copy(alpha = 0.8f)); Text(member.jabatan, fontSize = TextSize.s11, color = Color.White.copy(alpha = 0.7f)) }
                 }
-                Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text(member.noAnggota, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White, letterSpacing = 4.sp) }
-                Text("Berlaku sejak ${member.tanggalGabung}", fontSize = 10.sp, color = Color.White.copy(alpha = 0.6f))
+                Box(modifier = Modifier.fillMaxWidth().height(60.dp).background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp)), contentAlignment = Alignment.Center) { Text(member.noAnggota, fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = Color.White, letterSpacing = TextSize.s4) }
+                Text("Berlaku sejak ${member.tanggalGabung}", fontSize = TextSize.s10, color = Color.White.copy(alpha = 0.6f))
             }
         }
         Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
-            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) { Text("Informasi Kartu", fontSize = 14.sp, fontWeight = FontWeight.Bold); ProfileInfoRow("Status", member.status.value.replaceFirstChar { it.uppercase() }); ProfileInfoRow("Sejak", member.tanggalGabung); ProfileInfoRow("No. HP", member.noTelp) }
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) { Text("Informasi Kartu", fontSize = TextSize.s14, fontWeight = FontWeight.Bold); ProfileInfoRow("Status", member.status.value.replaceFirstChar { it.uppercase() }); ProfileInfoRow("Sejak", member.tanggalGabung); ProfileInfoRow("No. HP", member.noTelp) }
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Text("Bagikan", fontSize = 13.sp) }
-            OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Text("Unduh PNG", fontSize = 13.sp) }
+            OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Text("Bagikan", fontSize = TextSize.s13) }
+            OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) { Text("Unduh PNG", fontSize = TextSize.s13) }
         }
     }
 }
@@ -389,12 +391,12 @@ private fun MembershipStatusSection() {
     val filtered = remember(selectedFilter) { when (selectedFilter) { 1 -> sampleMembers.filter { it.status == Member.MemberStatus.AKTIF }; 2 -> sampleMembers.filter { it.status == Member.MemberStatus.NONAKTIF }; 3 -> sampleMembers.filter { it.status == Member.MemberStatus.KELUAR }; else -> sampleMembers } }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { filters.forEachIndexed { index, filter -> FilterChip(selected = selectedFilter == index, onClick = { selectedFilter = index }, label = { Text(filter, fontSize = 12.sp) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer)) } }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { filters.forEachIndexed { index, filter -> FilterChip(selected = selectedFilter == index, onClick = { selectedFilter = index }, label = { Text(filter, fontSize = TextSize.s12) }, colors = FilterChipDefaults.filterChipColors(selectedContainerColor = MaterialTheme.colorScheme.primaryContainer)) } }
         Spacer(modifier = Modifier.height(12.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            StatusSummary("Aktif", sampleMembers.count { it.status == Member.MemberStatus.AKTIF }, Color(0xFF2E7D32), Modifier.weight(1f))
-            StatusSummary("Nonaktif", sampleMembers.count { it.status == Member.MemberStatus.NONAKTIF }, Color(0xFFC62828), Modifier.weight(1f))
-            StatusSummary("Keluar", sampleMembers.count { it.status == Member.MemberStatus.KELUAR }, Color(0xFF9E9E9E), Modifier.weight(1f))
+            StatusSummary("Aktif", sampleMembers.count { it.status == Member.MemberStatus.AKTIF }, KopkarGreen, Modifier.weight(1f))
+            StatusSummary("Nonaktif", sampleMembers.count { it.status == Member.MemberStatus.NONAKTIF }, KopkarRed, Modifier.weight(1f))
+            StatusSummary("Keluar", sampleMembers.count { it.status == Member.MemberStatus.KELUAR }, KopkarGray, Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) { items(filtered, key = { it.id }) { member -> StatusMemberCard(member) } }
@@ -403,15 +405,15 @@ private fun MembershipStatusSection() {
 
 @Composable
 private fun StatusMemberCard(member: MemberUI) {
-    val statusColor = when (member.status) { Member.MemberStatus.AKTIF -> Color(0xFF2E7D32); Member.MemberStatus.NONAKTIF -> Color(0xFFC62828); Member.MemberStatus.KELUAR -> Color(0xFF9E9E9E) }
+    val statusColor = when (member.status) { Member.MemberStatus.AKTIF -> KopkarGreen; Member.MemberStatus.NONAKTIF -> KopkarRed; Member.MemberStatus.KELUAR -> KopkarGray }
     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
         Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(40.dp).background(statusColor.copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = statusColor) }
+            Box(modifier = Modifier.size(40.dp).background(statusColor.copy(alpha = 0.12f), CircleShape), contentAlignment = Alignment.Center) { Text(member.nama.take(2).uppercase(), fontSize = TextSize.s12, fontWeight = FontWeight.Bold, color = statusColor) }
             Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold); Text("${member.noAnggota} • ${member.jabatan}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            Column(modifier = Modifier.weight(1f)) { Text(member.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold); Text("${member.noAnggota} • ${member.jabatan}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             Column(horizontalAlignment = Alignment.End) {
-                Row(verticalAlignment = Alignment.CenterVertically) { Box(modifier = Modifier.size(8.dp).background(statusColor, CircleShape)); Spacer(modifier = Modifier.width(4.dp)); Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = 12.sp, color = statusColor, fontWeight = FontWeight.Medium) }
-                Text("Gabung: ${member.tanggalGabung}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(verticalAlignment = Alignment.CenterVertically) { Box(modifier = Modifier.size(8.dp).background(statusColor, CircleShape)); Spacer(modifier = Modifier.width(4.dp)); Text(member.status.value.replaceFirstChar { it.uppercase() }, fontSize = TextSize.s12, color = statusColor, fontWeight = FontWeight.Medium) }
+                Text("Gabung: ${member.tanggalGabung}", fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }
@@ -421,8 +423,8 @@ private fun StatusMemberCard(member: MemberUI) {
 private fun StatusSummary(label: String, count: Int, color: Color, modifier: Modifier = Modifier) {
     Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.08f)), shape = RoundedCornerShape(8.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("$count", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = color)
-            Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("$count", fontSize = TextSize.s20, fontWeight = FontWeight.Bold, color = color)
+            Text(label, fontSize = TextSize.s10, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -468,20 +470,20 @@ private fun SupplierSection() {
 private fun SupplierCard(supplier: SupplierUI, onClick: () -> Unit) {
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow), shape = RoundedCornerShape(12.dp)) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier.size(44.dp).background(Color(0xFF00695C).copy(alpha = 0.12f), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Store, contentDescription = null, tint = Color(0xFF00695C), modifier = Modifier.size(20.dp))
+            Box(modifier = Modifier.size(44.dp).background(KopkarTealDark.copy(alpha = 0.12f), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+                Icon(Icons.Filled.Store, contentDescription = null, tint = KopkarTealDark, modifier = Modifier.size(20.dp))
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(supplier.nama, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text("${supplier.kode} • ${supplier.kategori}", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(supplier.nama, fontSize = TextSize.s14, fontWeight = FontWeight.Bold)
+                Text("${supplier.kode} • ${supplier.kategori}", fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Column(horizontalAlignment = Alignment.End) {
-                val statusColor = if (supplier.status == "Aktif") Color(0xFF2E7D32) else Color(0xFFC62828)
+                val statusColor = if (supplier.status == "Aktif") KopkarGreen else KopkarRed
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.size(8.dp).background(statusColor, CircleShape))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(supplier.status, fontSize = 12.sp, color = statusColor, fontWeight = FontWeight.Medium)
+                    Text(supplier.status, fontSize = TextSize.s12, color = statusColor, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -493,18 +495,18 @@ private fun SupplierDetail(supplier: SupplierUI, onBack: () -> Unit) {
     LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(modifier = Modifier.size(80.dp).background(Color(0xFF00695C).copy(alpha = 0.15f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-                    Icon(Icons.Filled.Store, contentDescription = null, tint = Color(0xFF00695C), modifier = Modifier.size(36.dp))
+                Box(modifier = Modifier.size(80.dp).background(KopkarTealDark.copy(alpha = 0.15f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
+                    Icon(Icons.Filled.Store, contentDescription = null, tint = KopkarTealDark, modifier = Modifier.size(36.dp))
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(supplier.nama, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(supplier.kode, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(supplier.nama, fontSize = TextSize.s20, fontWeight = FontWeight.Bold)
+                Text(supplier.kode, fontSize = TextSize.s14, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(modifier = Modifier.height(4.dp))
-                val statusColor = if (supplier.status == "Aktif") Color(0xFF2E7D32) else Color(0xFFC62828)
+                val statusColor = if (supplier.status == "Aktif") KopkarGreen else KopkarRed
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.size(10.dp).background(statusColor, CircleShape))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(supplier.status, fontSize = 13.sp, color = statusColor, fontWeight = FontWeight.Medium)
+                    Text(supplier.status, fontSize = TextSize.s13, color = statusColor, fontWeight = FontWeight.Medium)
                 }
             }
         }
@@ -525,17 +527,17 @@ private fun SupplierDetail(supplier: SupplierUI, onBack: () -> Unit) {
                 OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
                     Icon(Icons.Filled.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Edit", fontSize = 12.sp)
+                    Text("Edit", fontSize = TextSize.s12)
                 }
                 OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
                     Icon(Icons.Filled.Phone, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Hubungi", fontSize = 12.sp)
+                    Text("Hubungi", fontSize = TextSize.s12)
                 }
                 OutlinedButton(onClick = { }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
                     Icon(Icons.Filled.Description, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Riwayat", fontSize = 12.sp)
+                    Text("Riwayat", fontSize = TextSize.s12)
                 }
             }
         }
@@ -569,15 +571,15 @@ data class SupplierUI(
 
 @Composable
 fun SectionTitle(title: String) {
-    Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+    Text(title, fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 }
 
 @Composable
 fun ProfileInfoRow(label: String, value: String) {
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text(label, fontSize = TextSize.s13, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(value, fontSize = TextSize.s13, fontWeight = FontWeight.Medium)
     }
 }
 
@@ -585,8 +587,8 @@ fun ProfileInfoRow(label: String, value: String) {
 fun FinancialCard(label: String, amount: Double, color: Color, modifier: Modifier = Modifier) {
     Card(modifier = modifier, colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.08f)), shape = RoundedCornerShape(8.dp)) {
         Column(modifier = Modifier.fillMaxWidth().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("Rp ${amount.toLong().toString().reversed().chunked(3).joinToString(".").reversed()}", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = color)
+            Text(label, fontSize = TextSize.s11, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(formatRupiah(amount), fontSize = TextSize.s14, fontWeight = FontWeight.Bold, color = color)
         }
     }
 }
