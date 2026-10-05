@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1084985007083",
+    "project_id": "koperasi-rsui",
+    "storage_bucket": "koperasi-rsui.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084985007083:android:7445fa6bae34dda7fe57ae",
+        "android_client_info": {
+          "package_name": "koperasirsui.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRoZKlixYdyDeyHHye5U0AZvp-bVHpxrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
