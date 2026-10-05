@@ -17,7 +17,7 @@ has_architecture: false
 - MVP jalan: Login (BCrypt), Dashboard, Tabungan, Poin, Transaksi, SHU, RAT, Profile, Admin (member mgmt, audit log, backup/restore)
 - Fitur masuk: notifikasi lokal, export CSV, konfirmasi aksi destructive, routing role admin, siap build release
 - **Migrasi data layer Room → Firebase (Auth + Firestore)** selesai di level kode, build & unit test lolos
-- **BLOCKER runtime**: `google-services.json` belum ada → app buka layar "Firebase belum dikonfigurasi" (guard `FirebaseStatus` di `MainActivity`). Aktifkan dengan menaruh file dari Firebase console ke `app/` lalu build ulang.
+- **`google-services.json` terpasang** (project `koperasi-rsui`), `applicationId` = `koperasirsui.com`, build ke-configure normal
 
 ## File Map (1-line/file)
 - `MainActivity.kt` — entry Compose + guard Firebase (MissingFirebaseScreen) + bottom bar
@@ -55,8 +55,8 @@ has_architecture: false
 - **AuditLog** — log aksi admin (lihat `AuditLogDao`)
 
 ## Next Steps
-1. [ ] Taruh `google-services.json` → build ulang → smoke test login (no. anggota + PIN) di device
-2. [ ] Aturan Firestore: buat rules (read/write per role) di console
-3. [ ] Verifikasi end-to-end: seed → login → mutasi tabungan → poin → SHU
-4. [ ] Buat release build (signing config) untuk distribusi
-5. [ ] Studi banding checklist di `PROJECT_SPEC.md` (masih banyak belum diisi)
+1. [ ] Console: aktifkan **Authentication → Sign-in method → Email/Password** (kalau mati, bridging login gagal diam-diam)
+2. [ ] Console: buat **Firestore Database** (test mode) lalu paste isi `firestore.rules` ke tab Rules
+3. [ ] Smoke test di HP: login KPR-001 + PIN → mutasi tabungan kebaca → cek seed jalan → cek mode offline
+4. [ ] Aturan Firestore production (authenticated-only + anonymous sign-in untuk Seeder)
+5. [ ] Buat release build (signing config) untuk distribusi
