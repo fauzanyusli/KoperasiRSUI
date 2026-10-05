@@ -1,44 +1,62 @@
 package com.example.kopkarrsui.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import com.example.kopkarrsui.data.local.FirestoreSupport.docFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.queryFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.save
+import com.example.kopkarrsui.data.local.Serializers.pointLedgerFrom
+import com.example.kopkarrsui.data.local.Serializers.toMap
 import com.example.kopkarrsui.data.local.entity.PointLedger
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-@Dao
-interface PointLedgerDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(ledger: PointLedger): Long
+/** Pengganti Room PointLedgerDao (lihat [com.example.kopkarrsui.data.local.FirestoreSupport]). */
+class PointLedgerDao @Inject constructor(private val db: FirebaseFirestore) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(ledgers: List<PointLedger>): List<Long>
+    private fun col() = db.collection("point_ledgers")
 
-    @Query("SELECT * FROM point_ledgers WHERE id = :id")
-    fun getById(id: Long): Flow<PointLedger?>
+    suspend fun insert(ledger: PointLedger): Long =
+        db.save("point_ledgers", ledger.id, ledger.toMap())
 
-    @Query("SELECT * FROM point_ledgers WHERE member_id = :memberId ORDER BY tgl DESC LIMIT :limit OFFSET :offset")
-    fun getByMemberPaged(memberId: Long, limit: Int, offset: Int): Flow<List<PointLedger>>
+    suspend fun insertAll(ledgers: List<PointLedger>): List<Long> = ledgers.map { insert(it) }
 
-    @Query("SELECT * FROM point_ledgers WHERE member_id = :memberId AND tipe = :tipe ORDER BY tgl DESC")
-    fun getByMemberAndType(memberId: Long, tipe: PointLedger.PointType): Flow<List<PointLedger>>
+    fun getById(id: Long): Flow<PointLedger?> =
+        docFlow(col().document(id.toString()), ::pointLedgerFrom)
 
-    @Query("SELECT SUM(jumlah) FROM point_ledgers WHERE member_id = :memberId")
-    fun getTotalPoinByMember(memberId: Long): Flow<Int?>
+    fun getByMemberPaged(memberId: Long, limit: Int, offset: Int): Flow<List<PointLedger>> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::pointLedgerFrom) {
+            it.sortedByDescending { l -> l.tgl }.drop(offset).take(limit)
+        }
 
-    @Query("SELECT SUM(jumlah) FROM point_ledgers WHERE member_id = :memberId AND tipe = 'earn'")
-    fun getTotalEarnedByMember(memberId: Long): Flow<Int?>
+    fun getByMemberAndType(memberId: Long, tipe: PointLedger.PointType): Flow<List<PointLedger>> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", tipe.value), ::pointLedgerFrom) {
+            it.sortedByDescending { l -> l.tgl }
+        }
 
-    @Query("SELECT SUM(jumlah) FROM point_ledgers WHERE member_id = :memberId AND tipe = 'redeem'")
-    fun getTotalRedeemedByMember(memberId: Long): Flow<Int?>
+    fun getTotalPoinByMember(memberId: Long): Flow<Int?> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::pointLedgerFrom)
+            .map { list -> list.sumOf { it.jumlah }.takeIf { list.isNotEmpty() } }
 
-    @Query("SELECT SUM(jumlah) FROM point_ledgers WHERE member_id = :memberId AND tipe = 'expire'")
-    fun getTotalExpiredByMember(memberId: Long): Flow<Int?>
+    fun getTotalEarnedByMember(memberId: Long): Flow<Int?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", "earn"), ::pointLedgerFrom)
+            .map { list -> list.sumOf { it.jumlah }.takeIf { list.isNotEmpty() } }
 
-    @Query("SELECT * FROM point_ledgers WHERE ref_transaksi_id = :refTransaksiId")
-    fun getByRefTransaksi(refTransaksiId: Long): Flow<List<PointLedger>>
+    fun getTotalRedeemedByMember(memberId: Long): Flow<Int?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", "redeem"), ::pointLedgerFrom)
+            .map { list -> list.sumOf { it.jumlah }.takeIf { list.isNotEmpty() } }
 
-    @Query("SELECT * FROM point_ledgers WHERE expired_at IS NOT NULL AND expired_at <= :now AND tipe = 'earn'")
-    fun getExpiredPoints(now: Long): Flow<List<PointLedger>>
+    fun getTotalExpiredByMember(memberId: Long): Flow<Int?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", "expire"), ::pointLedgerFrom)
+            .map { list -> list.sumOf { it.jumlah }.takeIf { list.isNotEmpty() } }
+
+    fun getByRefTransaksi(refTransaksiId: Long): Flow<List<PointLedger>> =
+        queryFlow(col().whereEqualTo("refTransaksiId", refTransaksiId), ::pointLedgerFrom) {
+            it.sortedByDescending { l -> l.tgl }
+        }
+
+    fun getExpiredPoints(now: Long): Flow<List<PointLedger>> =
+        queryFlow(col().whereEqualTo("tipe", "earn"), ::pointLedgerFrom) { list ->
+            list.filter { it.expiredAt != null && it.expiredAt <= now }.sortedBy { l -> l.expiredAt }
+        }
 }

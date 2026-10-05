@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services) apply false
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
@@ -48,6 +49,10 @@ android {
     buildFeatures {
         compose = true
     }
+    // google-services hanya dipasang kalo file-nya sudah ada (biar build jalan sebelum download)
+    if (project.file("google-services.json").exists()) {
+        apply(plugin = "com.google.gms.google-services")
+    }
     composeOptions {
         // Kotlin 2.0+ uses the Compose Compiler Gradle Plugin
     }
@@ -72,11 +77,11 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.material.icons.extended)
 
-    // Room
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-    androidTestImplementation(libs.room.testing)
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Hilt
     implementation(libs.hilt.android)

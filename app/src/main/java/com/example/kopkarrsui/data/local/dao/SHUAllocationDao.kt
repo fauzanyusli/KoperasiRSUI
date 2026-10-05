@@ -1,48 +1,86 @@
 package com.example.kopkarrsui.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.example.kopkarrsui.data.local.FirestoreSupport.docFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.fetch
+import com.example.kopkarrsui.data.local.FirestoreSupport.queryFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.save
+import com.example.kopkarrsui.data.local.Serializers.shuFrom
+import com.example.kopkarrsui.data.local.Serializers.toMap
 import com.example.kopkarrsui.data.local.entity.SHUAllocation
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-@Dao
-interface SHUAllocationDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(allocation: SHUAllocation): Long
+/** Pengganti Room SHUAllocationDao (lihat [com.example.kopkarrsui.data.local.FirestoreSupport]). */
+class SHUAllocationDao @Inject constructor(private val db: FirebaseFirestore) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(allocations: List<SHUAllocation>): List<Long>
+    private fun col() = db.collection("shu_allocations")
 
-    @Update
-    suspend fun update(allocation: SHUAllocation): Int
+    suspend fun insert(allocation: SHUAllocation): Long =
+        db.save("shu_allocations", allocation.id, allocation.toMap())
 
-    @Query("SELECT * FROM shu_allocations WHERE id = :id")
-    fun getById(id: Long): Flow<SHUAllocation?>
+    suspend fun insertAll(allocations: List<SHUAllocation>): List<Long> = allocations.map { insert(it) }
 
-    @Query("SELECT * FROM shu_allocations WHERE member_id = :memberId AND tahun = :tahun")
-    fun getByMemberAndYear(memberId: Long, tahun: Int): Flow<SHUAllocation?>
+    suspend fun update(allocation: SHUAllocation): Int {
+        if (allocation.id == 0L) return 0
+        db.save("shu_allocations", allocation.id, allocation.toMap())
+        return 1
+    }
 
-    @Query("SELECT * FROM shu_allocations WHERE member_id = :memberId ORDER BY tahun DESC")
-    fun getByMember(memberId: Long): Flow<List<SHUAllocation>>
+    fun getById(id: Long): Flow<SHUAllocation?> =
+        docFlow(col().document(id.toString()), ::shuFrom)
 
-    @Query("SELECT * FROM shu_allocations WHERE tahun = :tahun ORDER BY jumlah DESC")
-    fun getByYear(tahun: Int): Flow<List<SHUAllocation>>
+    fun getByMemberAndYear(memberId: Long, tahun: Int): Flow<SHUAllocation?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tahun", tahun), ::shuFrom)
+            .map { it.firstOrNull() }.distinctUntilChanged()
 
-    @Query("SELECT * FROM shu_allocations WHERE tahun = :tahun AND status = :status")
-    fun getByYearAndStatus(tahun: Int, status: SHUAllocation.SHUStatus): Flow<List<SHUAllocation>>
+    fun getByMember(memberId: Long): Flow<List<SHUAllocation>> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::shuFrom) {
+            it.sortedByDescending { a -> a.tahun }
+        }
 
-    @Query("SELECT SUM(jumlah) FROM shu_allocations WHERE tahun = :tahun AND status IN ('dibagikan', 'dicairkan')")
-    suspend fun getTotalDistributedByYear(tahun: Int): Long
+    fun getByYear(tahun: Int): Flow<List<SHUAllocation>> =
+        queryFlow(col().whereEqualTo("tahun", tahun), ::shuFrom) {
+            it.sortedByDescending { a -> a.jumlah }
+        }
 
-    @Query("UPDATE shu_allocations SET status = :status, tgl_bagi = :tglBagi, updated_at = :updatedAt WHERE tahun = :tahun AND status = 'dihitung'")
-    suspend fun updateStatusToDistributed(tahun: Int, status: SHUAllocation.SHUStatus, tglBagi: Long, updatedAt: Long): Int
+    fun getByYearAndStatus(tahun: Int, status: SHUAllocation.SHUStatus): Flow<List<SHUAllocation>> =
+        queryFlow(col().whereEqualTo("tahun", tahun).whereEqualTo("status", status.value), ::shuFrom) {
+            it.sortedByDescending { a -> a.jumlah }
+        }
 
-    @Query("UPDATE shu_allocations SET status = 'dicairkan', tgl_cair = :tglCair, updated_at = :updatedAt WHERE id = :id")
-    suspend fun updateToCair(id: Long, tglCair: Long, updatedAt: Long): Int
+    suspend fun getTotalDistributedByYear(tahun: Int): Long =
+        fetch(col().whereEqualTo("tahun", tahun), ::shuFrom)
+            .filter { it.status.value == "dibagikan" || it.status.value == "dicairkan" }
+            .sumOf { it.jumlah }
 
-    @Query("SELECT COUNT(*) FROM shu_allocations WHERE tahun = :tahun")
-    suspend fun countByYear(tahun: Int): Int
+    suspend fun updateStatusToDistributed(tahun: Int, status: SHUAllocation.SHUStatus, tglBagi: Long, updatedAt: Long): Int {
+        val targets = fetch(
+            col().whereEqualTo("tahun", tahun).whereEqualTo("status", "dihitung"),
+            ::shuFrom
+        )
+        if (targets.isEmpty()) return 0
+        val batch = db.batch()
+        targets.forEach { allocation ->
+            batch.update(
+                col().document(allocation.id.toString()),
+                mapOf("status" to status.value, "tglBagi" to tglBagi, "updatedAt" to updatedAt)
+            )
+        }
+        batch.commit().await()
+        return targets.size
+    }
+
+    suspend fun updateToCair(id: Long, tglCair: Long, updatedAt: Long): Int {
+        val ref = col().document(id.toString())
+        if (!ref.get().await().exists()) return 0
+        ref.update(mapOf("status" to "dicairkan", "tglCair" to tglCair, "updatedAt" to updatedAt)).await()
+        return 1
+    }
+
+    suspend fun countByYear(tahun: Int): Int =
+        fetch(col().whereEqualTo("tahun", tahun), ::shuFrom).size
 }

@@ -1,48 +1,70 @@
 package com.example.kopkarrsui.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.example.kopkarrsui.data.local.FirestoreSupport.docFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.fetch
+import com.example.kopkarrsui.data.local.FirestoreSupport.queryFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.save
+import com.example.kopkarrsui.data.local.Serializers.toMap
+import com.example.kopkarrsui.data.local.Serializers.transactionFrom
 import com.example.kopkarrsui.data.local.entity.Transaction
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-@Dao
-interface TransactionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(transaction: Transaction): Long
+/** Pengganti Room TransactionDao (lihat [com.example.kopkarrsui.data.local.FirestoreSupport]). */
+class TransactionDao @Inject constructor(private val db: FirebaseFirestore) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(transactions: List<Transaction>): List<Long>
+    private fun col() = db.collection("transactions")
 
-    @Update
-    suspend fun update(transaction: Transaction): Int
+    suspend fun insert(transaction: Transaction): Long =
+        db.save("transactions", transaction.id, transaction.toMap())
 
-    @Query("SELECT * FROM transactions WHERE id = :id")
-    fun getById(id: Long): Flow<Transaction?>
+    suspend fun insertAll(transactions: List<Transaction>): List<Long> = transactions.map { insert(it) }
 
-    @Query("SELECT * FROM transactions WHERE member_id = :memberId ORDER BY tgl DESC LIMIT :limit OFFSET :offset")
-    fun getByMemberPaged(memberId: Long, limit: Int, offset: Int): Flow<List<Transaction>>
+    suspend fun update(transaction: Transaction): Int {
+        if (transaction.id == 0L) return 0
+        db.save("transactions", transaction.id, transaction.toMap())
+        return 1
+    }
 
-    @Query("SELECT * FROM transactions WHERE member_id = :memberId AND tipe = :tipe ORDER BY tgl DESC")
-    fun getByMemberAndType(memberId: Long, tipe: Transaction.TransactionType): Flow<List<Transaction>>
+    fun getById(id: Long): Flow<Transaction?> =
+        docFlow(col().document(id.toString()), ::transactionFrom)
 
-    @Query("SELECT * FROM transactions WHERE member_id = :memberId AND tgl BETWEEN :startDate AND :endDate ORDER BY tgl DESC")
-    fun getByMemberAndDateRange(memberId: Long, startDate: Long, endDate: Long): Flow<List<Transaction>>
+    fun getByMemberPaged(memberId: Long, limit: Int, offset: Int): Flow<List<Transaction>> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::transactionFrom) {
+            it.sortedByDescending { t -> t.tgl }.drop(offset).take(limit)
+        }
 
-    @Query("SELECT * FROM transactions WHERE member_id = :memberId AND status = :status ORDER BY tgl DESC")
-    fun getByMemberAndStatus(memberId: Long, status: Transaction.TransactionStatus): Flow<List<Transaction>>
+    fun getByMemberAndType(memberId: Long, tipe: Transaction.TransactionType): Flow<List<Transaction>> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", tipe.value), ::transactionFrom) {
+            it.sortedByDescending { t -> t.tgl }
+        }
 
-    @Query("SELECT SUM(jumlah) FROM transactions WHERE member_id = :memberId AND tipe = 'belanja' AND status = 'sukses'")
-    fun getTotalBelanjaByMember(memberId: Long): Flow<Long?>
+    fun getByMemberAndDateRange(memberId: Long, startDate: Long, endDate: Long): Flow<List<Transaction>> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::transactionFrom) { list ->
+            list.filter { it.tgl in startDate..endDate }.sortedByDescending { t -> t.tgl }
+        }
 
-    @Query("SELECT SUM(poin_dihasilkan) FROM transactions WHERE member_id = :memberId AND status = 'sukses'")
-    fun getTotalPoinByMember(memberId: Long): Flow<Int?>
+    fun getByMemberAndStatus(memberId: Long, status: Transaction.TransactionStatus): Flow<List<Transaction>> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("status", status.value), ::transactionFrom) {
+            it.sortedByDescending { t -> t.tgl }
+        }
 
-    @Query("SELECT * FROM transactions WHERE ref_unit_usaha = :unitUsaha AND tgl BETWEEN :startDate AND :endDate ORDER BY tgl DESC")
-    fun getByUnitUsahaAndDateRange(unitUsaha: String, startDate: Long, endDate: Long): Flow<List<Transaction>>
+    fun getTotalBelanjaByMember(memberId: Long): Flow<Long?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("tipe", "belanja").whereEqualTo("status", "sukses"), ::transactionFrom)
+            .map { list -> list.sumOf { it.jumlah }.takeIf { list.isNotEmpty() } }
 
-    @Query("SELECT COUNT(*) FROM transactions WHERE member_id = :memberId AND status = 'sukses'")
-    suspend fun countSuccessByMember(memberId: Long): Int
+    fun getTotalPoinByMember(memberId: Long): Flow<Int?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("status", "sukses"), ::transactionFrom)
+            .map { list -> list.sumOf { it.poinDihasilkan }.takeIf { list.isNotEmpty() } }
+
+    fun getByUnitUsahaAndDateRange(unitUsaha: String, startDate: Long, endDate: Long): Flow<List<Transaction>> =
+        queryFlow(col().whereEqualTo("refUnitUsaha", unitUsaha), ::transactionFrom) { list ->
+            list.filter { it.tgl in startDate..endDate }.sortedByDescending { t -> t.tgl }
+        }
+
+    suspend fun countSuccessByMember(memberId: Long): Int =
+        fetch(col().whereEqualTo("memberId", memberId).whereEqualTo("status", "sukses"), ::transactionFrom).size
 }

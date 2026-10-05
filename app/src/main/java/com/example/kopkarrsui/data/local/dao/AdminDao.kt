@@ -1,42 +1,57 @@
 package com.example.kopkarrsui.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.example.kopkarrsui.data.local.FirestoreSupport.docFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.queryFlow
+import com.example.kopkarrsui.data.local.FirestoreSupport.save
+import com.example.kopkarrsui.data.local.Serializers.adminFrom
+import com.example.kopkarrsui.data.local.Serializers.toMap
 import com.example.kopkarrsui.data.local.entity.Admin
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-@Dao
-interface AdminDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(admin: Admin): Long
+/** Pengganti Room AdminDao (lihat [com.example.kopkarrsui.data.local.FirestoreSupport]). */
+class AdminDao @Inject constructor(private val db: FirebaseFirestore) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(admins: List<Admin>): List<Long>
+    private fun col() = db.collection("admins")
 
-    @Update
-    suspend fun update(admin: Admin): Int
+    suspend fun insert(admin: Admin): Long = db.save("admins", admin.id, admin.toMap())
 
-    @Query("SELECT * FROM admins WHERE id = :id")
-    fun getById(id: Long): Flow<Admin?>
+    suspend fun insertAll(admins: List<Admin>): List<Long> = admins.map { insert(it) }
 
-    @Query("SELECT * FROM admins WHERE member_id = :memberId")
-    fun getByMemberId(memberId: Long): Flow<Admin?>
+    suspend fun update(admin: Admin): Int {
+        if (admin.id == 0L) return 0
+        db.save("admins", admin.id, admin.toMap())
+        return 1
+    }
 
-    @Query("SELECT * FROM admins WHERE role = :role AND status = 'aktif'")
-    fun getByRole(role: Admin.AdminRole): Flow<List<Admin>>
+    fun getById(id: Long): Flow<Admin?> =
+        docFlow(col().document(id.toString()), ::adminFrom)
 
-    @Query("SELECT * FROM admins WHERE status = 'aktif'")
-    fun getAllActive(): Flow<List<Admin>>
+    fun getByMemberId(memberId: Long): Flow<Admin?> =
+        queryFlow(col().whereEqualTo("memberId", memberId), ::adminFrom)
+            .map { it.firstOrNull() }.distinctUntilChanged()
 
-    @Query("SELECT * FROM admins ORDER BY role ASC")
-    fun getAll(): Flow<List<Admin>>
+    fun getByRole(role: Admin.AdminRole): Flow<List<Admin>> =
+        queryFlow(col().whereEqualTo("role", role.value).whereEqualTo("status", "aktif"), ::adminFrom)
 
-    @Query("UPDATE admins SET status = :status, updated_at = :updatedAt WHERE id = :id")
-    suspend fun updateStatus(id: Long, status: Admin.AdminStatus, updatedAt: Long): Int
+    fun getAllActive(): Flow<List<Admin>> =
+        queryFlow(col().whereEqualTo("status", "aktif"), ::adminFrom)
 
-    @Query("SELECT * FROM admins WHERE member_id = :memberId AND status = 'aktif'")
-    fun getActiveByMemberId(memberId: Long): Flow<Admin?>
+    fun getAll(): Flow<List<Admin>> =
+        queryFlow(col(), ::adminFrom) { it.sortedBy { a -> a.role.value } }
+
+    suspend fun updateStatus(id: Long, status: Admin.AdminStatus, updatedAt: Long): Int {
+        val ref = col().document(id.toString())
+        if (!ref.get().await().exists()) return 0
+        ref.update(mapOf("status" to status.value, "updatedAt" to updatedAt)).await()
+        return 1
+    }
+
+    fun getActiveByMemberId(memberId: Long): Flow<Admin?> =
+        queryFlow(col().whereEqualTo("memberId", memberId).whereEqualTo("status", "aktif"), ::adminFrom)
+            .map { it.firstOrNull() }.distinctUntilChanged()
 }

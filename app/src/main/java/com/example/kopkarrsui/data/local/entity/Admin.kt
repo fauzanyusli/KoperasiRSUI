@@ -1,35 +1,14 @@
 package com.example.kopkarrsui.data.local.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-
-@Entity(
-    tableName = "admins",
-    foreignKeys = [
-        ForeignKey(
-            entity = Member::class,
-            parentColumns = ["id"],
-            childColumns = ["member_id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [
-        Index(value = ["member_id"], unique = true),
-        Index(value = ["role"])
-    ]
-)
 data class Admin(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    @ColumnInfo(name = "member_id") val memberId: Long,
-    @ColumnInfo(name = "role") val role: AdminRole,
-    @ColumnInfo(name = "izin_json") val izinJson: String?,
-    @ColumnInfo(name = "aktif_sejak") val aktifSejak: Long = System.currentTimeMillis(),
-    @ColumnInfo(name = "status") val status: AdminStatus = AdminStatus.AKTIF,
-    @ColumnInfo(name = "created_at") val createdAt: Long = System.currentTimeMillis(),
-    @ColumnInfo(name = "updated_at") val updatedAt: Long = System.currentTimeMillis()
+     val id: Long = 0,
+     val memberId: Long,
+     val role: AdminRole,
+     val izinJson: String?,
+     val aktifSejak: Long = System.currentTimeMillis(),
+     val status: AdminStatus = AdminStatus.AKTIF,
+     val createdAt: Long = System.currentTimeMillis(),
+     val updatedAt: Long = System.currentTimeMillis()
 ) {
     enum class AdminRole(val value: String, val label: String) {
         KETUA("ketua", "Ketua"),

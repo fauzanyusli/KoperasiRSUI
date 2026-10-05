@@ -1,52 +1,53 @@
 package com.example.kopkarrsui.data.local
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
+import com.example.kopkarrsui.data.local.FirestoreSupport.setCounter
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Backup/restore Firestore ↔ file JSON.
+ * Pengganti backup file .db Room — database sekarang cloud, file lokal hanya ekspor.
+ * ponytail: restore menimpa dokumen per ID; tidak ada version/conflict handling —
+ * cukup untuk data koperasi skala kecil. Upgrade path: Cloud Firestore export
+ * (gcloud firestore export) untuk backup skala besar.
+ */
 object DatabaseBackup {
 
-    private const val DB_NAME = "kopkar_database"
+    private const val BACKUP_DIR = "backups"
 
     data class BackupResult(val success: Boolean, val message: String, val filePath: String? = null)
 
     fun backup(context: Context): BackupResult {
         return try {
-            val dbFile = context.getDatabasePath(DB_NAME)
-            if (!dbFile.exists()) {
-                return BackupResult(false, "Database belum ada")
+            val root = JSONObject()
+            val db = FirebaseFirestore.getInstance()
+            runBlocking {
+                for (collection in Serializers.all) {
+                    @Suppress("UNCHECKED_CAST")
+                    val col = collection as Serializers.BackupCollection<Any>
+                    val array = JSONArray()
+                    db.collection(col.name).get().await().documents.forEach { doc ->
+                        val entity = col.fromMap(doc.data.orEmpty())
+                        array.put(toJson(col.toMap(entity)))
+                    }
+                    root.put(col.name, array)
+                }
             }
 
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val backupDir = File(context.getExternalFilesDir(null), "backups")
+            val backupDir = File(context.getExternalFilesDir(null), BACKUP_DIR)
             if (!backupDir.exists()) backupDir.mkdirs()
 
-            val backupFile = File(backupDir, "kopkar_backup_$timestamp.db")
-
-            // Close WAL to ensure consistent backup
-            SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { db ->
-                db.rawQuery("PRAGMA wal_checkpoint(FULL)", null).use { it.moveToFirst() }
-            }
-
-            // Copy main db file
-            dbFile.copyTo(backupFile, overwrite = true)
-
-            // Copy WAL file if exists
-            val walFile = File(dbFile.path + "-wal")
-            if (walFile.exists()) {
-                walFile.copyTo(File(backupFile.path + "-wal"), overwrite = true)
-            }
-
-            // Copy SHM file if exists
-            val shmFile = File(dbFile.path + "-shm")
-            if (shmFile.exists()) {
-                shmFile.copyTo(File(backupFile.path + "-shm"), overwrite = true)
-            }
+            val backupFile = File(backupDir, "kopkar_backup_$timestamp.json")
+            backupFile.writeText(root.toString())
 
             val sizeKb = backupFile.length() / 1024
             BackupResult(true, "Backup berhasil: ${backupFile.name} (${sizeKb}KB)", backupFile.absolutePath)
@@ -60,31 +61,37 @@ object DatabaseBackup {
             if (!backupFile.exists()) {
                 return BackupResult(false, "File backup tidak ditemukan")
             }
+            val root = JSONObject(backupFile.readText())
+            val db = FirebaseFirestore.getInstance()
 
-            val dbFile = context.getDatabasePath(DB_NAME)
+            runBlocking {
+                for (collection in Serializers.all) {
+                    @Suppress("UNCHECKED_CAST")
+                    val col = collection as Serializers.BackupCollection<Any>
+                    val array = root.optJSONArray(col.name) ?: continue
 
-            // Close existing database
-            SQLiteDatabase.openDatabase(dbFile.path, null, SQLiteDatabase.OPEN_READONLY).use { it.close() }
-
-            // Delete old database
-            dbFile.delete()
-            File(dbFile.path + "-wal").delete()
-            File(dbFile.path + "-shm").delete()
-            File(dbFile.path + "-journal").delete()
-
-            // Copy backup to db location
-            backupFile.copyTo(dbFile, overwrite = true)
-
-            // Copy WAL if exists in backup
-            val backupWal = File(backupFile.path + "-wal")
-            if (backupWal.exists()) {
-                backupWal.copyTo(File(dbFile.path + "-wal"), overwrite = true)
-            }
-
-            // Copy SHM if exists in backup
-            val backupShm = File(backupFile.path + "-shm")
-            if (backupShm.exists()) {
-                backupShm.copyTo(File(dbFile.path + "-shm"), overwrite = true)
+                    var batch = db.batch()
+                    var ops = 0
+                    var maxId = 0L
+                    for (i in 0 until array.length()) {
+                        val data = fromJson(array.getJSONObject(i))
+                        val entity = col.fromMap(data)
+                        val id = col.id(entity)
+                        if (id > maxId) maxId = id
+                        batch.set(
+                            db.collection(col.name).document(id.toString()),
+                            data + ("id" to id)
+                        )
+                        ops++
+                        if (ops >= 400) {
+                            batch.commit().await()
+                            batch = db.batch()
+                            ops = 0
+                        }
+                    }
+                    if (ops > 0) batch.commit().await()
+                    if (maxId > 0) db.setCounter(col.name, maxId)
+                }
             }
 
             BackupResult(true, "Restore berhasil dari: ${backupFile.name}")
@@ -94,14 +101,31 @@ object DatabaseBackup {
     }
 
     fun getBackupList(context: Context): List<File> {
-        val backupDir = File(context.getExternalFilesDir(null), "backups")
+        val backupDir = File(context.getExternalFilesDir(null), BACKUP_DIR)
         if (!backupDir.exists()) return emptyList()
-        return backupDir.listFiles { file -> file.extension == "db" }
+        return backupDir.listFiles { file -> file.extension == "json" }
             ?.sortedByDescending { it.lastModified() }
             ?: emptyList()
     }
 
     fun deleteBackup(file: File): Boolean {
         return file.delete()
+    }
+
+    private fun toJson(map: Map<String, Any?>): JSONObject {
+        val json = JSONObject()
+        map.forEach { (key, value) -> json.put(key, value ?: JSONObject.NULL) }
+        return json
+    }
+
+    private fun fromJson(json: JSONObject): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>()
+        val keys = json.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            val value = json.opt(key)
+            map[key] = if (value == JSONObject.NULL) null else value
+        }
+        return map
     }
 }

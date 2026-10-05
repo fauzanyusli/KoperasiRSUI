@@ -59,9 +59,9 @@ Pengurus (1) ────── Anggota (1:1, role-based)
 5. **Anggota nonaktif** — tidak bisa transaksi, poin freeze
 
 ## Technical Decisions (Open)
-- [ ] Room only vs Room + Backend API
-- [ ] Auth: PIN lokal saja / JWT + biometrik / Firebase Auth
-- [ ] Sync strategy: manual pull-to-refresh / background WorkManager / realtime
+- [x] Room only vs Room + Backend API → **Firebase (Auth + Firestore)**; Room dihapus total (04-10-2026)
+- [x] Auth: PIN lokal saja / JWT + biometrik / Firebase Auth → **bridging Firebase Auth** (email = noAnggota@kopkar.local, PIN = password; hash lokal BCrypt tetap validasi utama; offline → fallback anonymous)
+- [x] Sync strategy → **realtime Firestore** (Flow listener per koleksi, lewat FirestoreSupport)
 - [ ] SHU calculation: client-side (read-only) / server-side push
 
 ## Gotchas

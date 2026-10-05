@@ -6,14 +6,19 @@ import android.app.Application
 import com.example.kopkarrsui.data.local.SessionManager
 import com.example.kopkarrsui.data.local.dao.AdminDao
 import com.example.kopkarrsui.domain.repository.MemberRepository
+import com.example.kopkarrsui.util.MemberAuth
 import com.example.kopkarrsui.util.NotificationHelper
 import com.example.kopkarrsui.util.PasswordUtils
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +26,7 @@ class LoginViewModel @Inject constructor(
     private val memberRepository: MemberRepository,
     private val adminDao: AdminDao,
     private val sessionManager: SessionManager,
+    private val firebaseAuth: FirebaseAuth,
     private val application: Application
 ) : ViewModel() {
 
@@ -53,6 +59,9 @@ class LoginViewModel @Inject constructor(
                     return@launch
                 }
 
+                // Firebase Auth: email = mapping no. anggota, password = PIN
+                firebaseSignIn(member.noAnggota, pin)
+
                 sessionManager.saveSession(member.id)
                 NotificationHelper.showWelcomeNotification(application, member.nama)
 
@@ -62,6 +71,28 @@ class LoginViewModel @Inject constructor(
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error(e.message ?: "Gagal login")
             }
+        }
+    }
+
+    /**
+     * Jembatan ke Firebase Auth (best effort):
+     * - akun belum ada → createUser (PIN = password, anggota self-provision saat login pertama)
+     * - password Auth lama beda dengan PIN (hash lokal cocok) → fallback anonymous
+     * - offline → lanjut, Firestore tetap jalan dari cache
+     */
+    private suspend fun firebaseSignIn(noAnggota: String, pin: String) {
+        val email = MemberAuth.emailFor(noAnggota)
+        try {
+            try {
+                firebaseAuth.signInWithEmailAndPassword(email, pin).await()
+            } catch (_: FirebaseAuthInvalidUserException) {
+                firebaseAuth.createUserWithEmailAndPassword(email, pin).await()
+            }
+        } catch (_: FirebaseAuthInvalidCredentialsException) {
+            // wrong-password / weak-password (PIN < 6 digit) — hash lokal sudah valid, tetap masuk
+            runCatching { firebaseAuth.signInAnonymously().await() }
+        } catch (_: Exception) {
+            // jaringan bermasalah — session lokal tetap jalan
         }
     }
 
